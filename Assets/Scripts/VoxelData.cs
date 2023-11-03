@@ -4,17 +4,29 @@ using UnityEngine;
 
 public static class VoxelData
 {
+    //Read these from a config file?
+    //maybe not chunk hieght/width
 
-    public static readonly int ChunkWidth = 5;
-    public static readonly int ChunkHeight = 15; //IDEA: each chunk layer could unlock new thing, or n layers of chunks
-    public static readonly int WorldSizeChunks = 5;
+    public static readonly int ChunkWidth = 16; // Width of chunk in blocks
+    public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
+    
+    public static readonly int WorldWidthChunks = 5;  //TODO: update this
+    public static readonly int WorldHeightChunks = 5; //TODO: update this
 
+    public static int WorldWidthInVoxels
+    {
+        get { return ChunkWidth * WorldWidthChunks; }
+    }
+    public static int WorldHeightInVoxels
+    {
+        get { return ChunkHeight * WorldHeightChunks; }
+    }
+
+    //texure atlas is n blocks square of same width blocks
     public static readonly int TextureAtlasSizeInBlocks = 4;
     public static float NormalizedBlockTextureSize
     {
-
         get { return 1f / (float)TextureAtlasSizeInBlocks; }
-
     }
 
     public static readonly Vector3[] voxelVerts = new Vector3[8] {
