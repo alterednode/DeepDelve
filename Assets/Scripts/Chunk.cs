@@ -53,11 +53,21 @@ public class Chunk
     void PopulateVoxelMap()
     {
 
-        for (int y = 0; y < VoxelData.ChunkHeight; y++)
-        {
+        
             for (int x = 0; x < VoxelData.ChunkWidth; x++)
             {
                 for (int z = 0; z < VoxelData.ChunkWidth; z++)
+                {
+
+                ///TODO: maybe calc perlin noise here, to calc once per x,y coord.
+                /// this feels like the wrong spot to do it tho, but idk where else
+                /// we could do it.
+                
+
+               // float maxHightNoise = Perlin.Noise(x, z);
+
+
+                for (int y = 0; y < VoxelData.ChunkHeight; y++)
                 {
 
                     voxelMap[x,y,z] = world.GetVoxel(new Vector3(x,y,z) + position);
@@ -131,21 +141,24 @@ public class Chunk
                 //doing some cheeky stuff to have less vertecies in world :)
                 byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
 
-                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
-                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
-                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
-                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
+                if (blockID != 0) // skip air 
+                {
 
-                AddTexture(world.blocktypes[blockID].GetTextureID(p));
+                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
+                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
+                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
+                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
 
-                triangles.Add(vertexIndex);
-                triangles.Add(vertexIndex + 1);
-                triangles.Add(vertexIndex + 2);
-                triangles.Add(vertexIndex + 2);
-                triangles.Add(vertexIndex + 1);
-                triangles.Add(vertexIndex + 3);
-                vertexIndex += 4;
+                    AddTexture(world.blocktypes[blockID].GetTextureID(p));
 
+                    triangles.Add(vertexIndex);
+                    triangles.Add(vertexIndex + 1);
+                    triangles.Add(vertexIndex + 2);
+                    triangles.Add(vertexIndex + 2);
+                    triangles.Add(vertexIndex + 1);
+                    triangles.Add(vertexIndex + 3);
+                    vertexIndex += 4;
+                }
             }
         }
 

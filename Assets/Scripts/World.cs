@@ -1,12 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class World : MonoBehaviour
 {
 
     public Transform player;
-    public Vector3 spawnposition; //set in Start()
+    public Vector3 spawnPosition; //set in Start()
 
     public Material material;
     public BlockType[] blocktypes;
@@ -15,29 +17,33 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-        GenerateStartArea();
-        
+        spawnPosition = new Vector3(VoxelData.WorldWidthInVoxels / 2, VoxelData.WorldHeightInVoxels + 5, VoxelData.WorldWidthInVoxels / 2);
+
+        GenerateWorld();
+
     }
 
-    public static readonly int ViewDistanceChunks = 5;
-
-
-
-
-    void GenerateStartArea()
-    //TODO: update to generate more y layers
+    void GenerateWorld()
     {
-        for (int x = 0; x < VoxelData.WorldWidthChunks; x++)
-        { //in tutorial this is world size chunks
-            for (int z = 0; z < VoxelData.WorldWidthChunks; z++) //here too
+
+        int horizMid = VoxelData.WorldWidthChunks / 2;
+        int vertMid = VoxelData.WorldHeightChunks / 2;
+      
+
+        for (int x = horizMid - VoxelData.ViewDistanceInChunks; x < horizMid + VoxelData.ViewDistanceInChunks; x++)
+        { 
+            for (int z = horizMid - VoxelData.ViewDistanceInChunks; z < horizMid + VoxelData.ViewDistanceInChunks; z++) //here too
             {
-                for (int y = 0; y < VoxelData.WorldHeightChunks; y++)
+                for (int y = VoxelData.WorldHeightChunks - VoxelData.ViewDistanceInChunks; y < VoxelData.WorldHeightChunks; y++)
                 {
                     CreateNewChunk(x, y, z);
                 }
             }
 
         }
+
+        player.position = spawnPosition;
+
     }
 
     public byte GetVoxel(Vector3 pos)
@@ -53,17 +59,14 @@ public class World : MonoBehaviour
         {
             return 1;
         }
-        else if (pos.y == VoxelData.WorldHeightInVoxels - 1)
-        {
-            float randomFloat = Random.value;
-            if (randomFloat < .5)
-                return 3; //voxel/block ids are stored as byte (1-255)
-            else
-                return 4;
-
-        }
+        else if (pos.y == VoxelData.WorldHeightInVoxels / 2 - 1)//changed from tutorial
+            return 3;
         else
             return 2;
+
+
+
+        
 
     }
 
@@ -89,12 +92,12 @@ public class World : MonoBehaviour
 
     bool IsVoxelInWorld(Vector3 pos)
     {
-        if( pos.x >= 0 && pos.x < VoxelData.WorldWidthInVoxels &&
+        if (pos.x >= 0 && pos.x < VoxelData.WorldWidthInVoxels &&
             pos.y >= 0 && pos.y < VoxelData.WorldHeightInVoxels &&
             pos.z >= 0 && pos.z < VoxelData.WorldWidthInVoxels
             )
             return true;
-        else 
+        else
             return false;
     }
 

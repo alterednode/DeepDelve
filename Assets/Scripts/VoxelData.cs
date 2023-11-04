@@ -10,8 +10,9 @@ public static class VoxelData
     public static readonly int ChunkWidth = 16; // Width of chunk in blocks
     public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
     
-    public static readonly int WorldWidthChunks = 5;  //TODO: update this
-    public static readonly int WorldHeightChunks = 5; //TODO: update this
+    public static readonly int WorldWidthChunks = 100;  //TODO: update this
+    public static readonly int WorldHeightChunks = 100; //TODO: update this
+
 
     public static int WorldWidthInVoxels
     {
@@ -21,6 +22,8 @@ public static class VoxelData
     {
         get { return ChunkHeight * WorldHeightChunks; }
     }
+
+    public static readonly int ViewDistanceInChunks = 5;
 
     //texure atlas is n blocks square of same width blocks
     public static readonly int TextureAtlasSizeInBlocks = 4;
