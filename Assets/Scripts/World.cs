@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class World : MonoBehaviour
 {
@@ -20,6 +22,49 @@ public class World : MonoBehaviour
         spawnPosition = new Vector3(VoxelData.WorldWidthInVoxels / 2, VoxelData.WorldHeightInVoxels + 5, VoxelData.WorldWidthInVoxels / 2);
 
         GenerateWorld();
+
+    }
+
+    private void Update()
+    {
+        
+    }
+
+    ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
+        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight);
+        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
+
+        return new ChunkCoord(x, y, z);
+    }
+
+    void CheckViewDistance()
+    {
+        ChunkCoord coord = GetChunkCoordFromVector3(player.position);
+
+        for(int x = coord.x - VoxelData.ViewDistanceInChunks; x < coord.x + VoxelData.ViewDistanceInChunks; x++)
+        {
+            for (int z = coord.z - VoxelData.ViewDistanceInChunks; z < coord.z + VoxelData.ViewDistanceInChunks; z++)
+            {
+                for (int y = coord.y - VoxelData.ViewDistanceInChunks; y < coord.y + VoxelData.ViewDistanceInChunks; y++)
+                {
+                    if (IsChunkInWorld(coord))
+                    {
+                        if (chunks[x, y, z] == null)
+                        {
+                            CreateNewChunk(x, y, z);
+                        }
+                    }
+
+
+
+
+
+                }
+            }
+        }
+
 
     }
 
