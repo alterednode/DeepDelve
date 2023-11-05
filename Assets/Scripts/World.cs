@@ -22,15 +22,18 @@ public class World : MonoBehaviour
     private bool isCreatingChunks = false;
     private void Start()
     {
+        Debug.Log("starting start");
         spawnPosition = new Vector3(VoxelData.WorldWidthInVoxels / 2, VoxelData.WorldHeightInVoxels + 5, VoxelData.WorldWidthInVoxels / 2);
 
         GenerateWorld();
+        Debug.Log("world gened");
 
     }
 
     private void Update()
     {
-        CreateChunks();
+        if (chunksToCreate.Count > 0 && !isCreatingChunks)
+            StartCoroutine("CreateChunks");
     }
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -133,25 +136,22 @@ public class World : MonoBehaviour
         {
             return 0;
         }
-
-        float noise = Perlin.Noise(pos.x / VoxelData.PosPerlinScaling  + 0.5f, pos.y / VoxelData.PosPerlinScaling + 0.5f, pos.z / VoxelData.PosPerlinScaling + 0.5f);
-
-        if (noise < -.1f)
+        //TODO: find better noise and improve cutoffs for where ores spawn
+        float noise = Perlin.Fbm(pos.x / VoxelData.PosPerlinScaling  + 0.5f, pos.y / VoxelData.PosPerlinScaling + 0.5f, pos.z / VoxelData.PosPerlinScaling + 0.5f, 2);
+        Debug.Log(noise);
+        if(noise > 0.5f)
         {
-            Debug.Log("GenOre1");
             return 2;
 
-        }
-        else if (noise < 0.9f)
+        }else if (noise < -0.5f)
         {
-            return 1;
+            return 3;
         }
         else
         {
-            Debug.Log("genOre2");
-            return 3;
-
+            return 1;
         }
+
 
 
 
@@ -162,6 +162,8 @@ public class World : MonoBehaviour
     void CreateNewChunk(int x, int y, int z)
     {
         chunks[x, y, z] = new Chunk(new ChunkCoord(x, y, z), this);
+        chunksToCreate.Add(new ChunkCoord(x,y,z));
+        
     }
 
     void CreateNewChunk(int x, int z) // for purposes of having code match tutorial better

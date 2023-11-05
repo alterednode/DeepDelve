@@ -520,12 +520,12 @@ MonoBehaviour:
   player: {fileID: 351880038}
   spawnPosition: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: 2128f3524780f5243a69db27c2f2a8b6, type: 2}
-  transparentMaterial: {fileID: 0}
+  transparentMaterial: {fileID: 2100000, guid: e9cdd9351166c924b909990f40ecf7d3, type: 2}
   blocktypes:
   - blockName: Air
     isSolid: 0
     unimportant: 0
-    transparency_I_think: 1
+    transparency_I_think: 0
     backFaceTexture: 0
     frontFaceTexture: 0
     topFaceTexture: 0
@@ -535,7 +535,7 @@ MonoBehaviour:
   - blockName: Regolith
     isSolid: 1
     unimportant: 1
-    transparency_I_think: 1
+    transparency_I_think: 0
     backFaceTexture: 9
     frontFaceTexture: 9
     topFaceTexture: 9
