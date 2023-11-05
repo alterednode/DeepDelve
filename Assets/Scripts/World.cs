@@ -18,6 +18,8 @@ public class World : MonoBehaviour
 
     Chunk[,,] chunks = new Chunk[VoxelData.WorldWidthChunks, VoxelData.WorldHeightChunks, VoxelData.WorldWidthChunks];//REMINDER turn into 3d array to make vertical chunks
 
+    List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
+    private bool isCreatingChunks = false;
     private void Start()
     {
         spawnPosition = new Vector3(VoxelData.WorldWidthInVoxels / 2, VoxelData.WorldHeightInVoxels + 5, VoxelData.WorldWidthInVoxels / 2);
@@ -28,7 +30,7 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-
+        CreateChunks();
     }
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -102,6 +104,24 @@ public class World : MonoBehaviour
 
     }
 
+    IEnumerator CreateChunks()
+    {
+
+        isCreatingChunks = true;
+        Debug.Log("Creating Chunk");
+        while (chunksToCreate.Count > 0)
+        {
+
+            chunks[chunksToCreate[0].x,chunksToCreate[0].y, chunksToCreate[0].z].Init();
+            chunksToCreate.RemoveAt(0);
+            yield return null;
+
+        }
+
+        isCreatingChunks = false;
+
+    }
+
     public byte GetVoxel(Vector3 pos)
     {
         if (!IsVoxelInWorld(pos))
@@ -109,15 +129,29 @@ public class World : MonoBehaviour
             return 0;
         }
 
+        if(pos.y > VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
+        {
+            return 0;
+        }
 
-        float noise = Perlin.Noise(pos.x / VoxelData.ChunkWidth + 0.5f, pos.y / VoxelData.ChunkHeight + 0.5f, pos.z / VoxelData.ChunkWidth + 0.5f);
+        float noise = Perlin.Noise(pos.x / VoxelData.PosPerlinScaling  + 0.5f, pos.y / VoxelData.PosPerlinScaling + 0.5f, pos.z / VoxelData.PosPerlinScaling + 0.5f);
 
-        if (noise < -.75f)
+        if (noise < -.1f)
+        {
+            Debug.Log("GenOre1");
             return 2;
-        else if (noise < 0.75f)
+
+        }
+        else if (noise < 0.9f)
+        {
             return 1;
+        }
         else
+        {
+            Debug.Log("genOre2");
             return 3;
+
+        }
 
 
 

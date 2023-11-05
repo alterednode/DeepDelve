@@ -27,29 +27,35 @@ public class Chunk
 
     World world;
 
+
+    private bool _isActive;
+    public bool isVoxelMapPopulated = false;
     public Chunk(ChunkCoord _coord, World _world)
     {
         coord = _coord;
         world = _world;
 
+    }
+
+    public void Init()
+    {
+
         chunkObject = new GameObject();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
 
-        meshRenderer.material = world.material;
+        materials[0] = world.material;
+        materials[1] = world.transparentMaterial;
+        meshRenderer.materials = materials;
+
         chunkObject.transform.SetParent(world.transform);
         chunkObject.transform.position = new Vector3(coord.x * VoxelData.ChunkWidth, coord.y * VoxelData.ChunkHeight, coord.z * VoxelData.ChunkWidth);
         chunkObject.name = "Chunk " + coord.x + ", " + coord.y + ", " + coord.z;
 
 
-
-
-
         PopulateVoxelMap();
+        UpdateChunk();
 
-        CreateMeshData();
-
-        CreateMesh();
     }
 
     void PopulateVoxelMap()
@@ -69,6 +75,38 @@ public class Chunk
 
     }
 
+    void UpdateChunk()
+    {
+
+        ClearMeshData();
+
+        for (int y = 0; y < VoxelData.ChunkHeight; y++)
+        {
+            for (int x = 0; x < VoxelData.ChunkWidth; x++)
+            {
+                for (int z = 0; z < VoxelData.ChunkWidth; z++)
+                {
+
+                    if (world.blocktypes[voxelMap[x, y, z]].isSolid)
+                        UpdateMeshData(new Vector3(x, y, z));
+
+                }
+            }
+        }
+
+        CreateMesh();
+
+    }
+
+    void ClearMeshData()
+    {
+
+        vertexIndex = 0;
+        vertices.Clear();
+        triangles.Clear();
+        uvs.Clear();
+
+    }
     void CreateMeshData()
     {
 
@@ -79,7 +117,7 @@ public class Chunk
                 for (int z = 0; z < VoxelData.ChunkWidth; z++)
                 {
 
-                    AddVoxelDataToChunk(new Vector3(x, y, z));
+                    UpdateMeshData(new Vector3(x, y, z));
 
                 }
             }
@@ -107,7 +145,7 @@ public class Chunk
             return true;
 
     }
-    bool CheckVoxel(Vector3 pos)
+    bool CheckVoxelSolid(Vector3 pos)
     {
         //check if the voxl is solid using the blockdata in the world unity obj world script
         int x = Mathf.FloorToInt(pos.x);
@@ -121,35 +159,79 @@ public class Chunk
 
     }
 
-    void AddVoxelDataToChunk(Vector3 pos)
+    bool CheckVoxelUnimportant(Vector3 pos)
     {
+        //check if the voxl is solid using the blockdata in the world unity obj world script
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        int z = Mathf.FloorToInt(pos.z);
+
+        if (!IsVoxelInChunk(x, y, z))
+            return world.blocktypes[world.GetVoxel(pos + position)].unimportant;
+
+        return world.blocktypes[voxelMap[x, y, z]].unimportant;
+
+    }
+
+    bool CheckVoxelTransparency_I_think(Vector3 pos)
+    {
+        //check if the voxl is solid using the blockdata in the world unity obj world script
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        int z = Mathf.FloorToInt(pos.z);
+
+        if (!IsVoxelInChunk(x, y, z))
+            return world.blocktypes[world.GetVoxel(pos + position)].transparency_I_think;
+
+        return world.blocktypes[voxelMap[x, y, z]].transparency_I_think;
+
+    }
+
+
+
+    void UpdateMeshData(Vector3 pos)
+    {
+
+        byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
+
+        bool transparency_I_think = world.blocktypes[blockID].transparency_I_think; //TODO: transparency?
+
+        bool unimportant = world.blocktypes[blockID].unimportant;
 
         for (int p = 0; p < 6; p++)
         {
 
-            if (!CheckVoxel(pos + VoxelData.faceChecks[p]))
+            if ((!unimportant && !CheckVoxelSolid(pos + VoxelData.faceCheckVectors[p])) || !(unimportant && CheckVoxelUnimportant(pos + VoxelData.faceCheckVectors[p])))
             {
-                //doing some cheeky stuff to have less vertecies in world :)
-                byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
 
-                if (blockID != 0) // skip air 
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
+
+                AddTexture(world.blocktypes[blockID].GetTextureID(p));
+
+                if (!transparency_I_think && !unimportant)
                 {
-
-                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
-                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
-                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
-                    vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
-
-                    AddTexture(world.blocktypes[blockID].GetTextureID(p));
-
                     triangles.Add(vertexIndex);
                     triangles.Add(vertexIndex + 1);
                     triangles.Add(vertexIndex + 2);
                     triangles.Add(vertexIndex + 2);
                     triangles.Add(vertexIndex + 1);
                     triangles.Add(vertexIndex + 3);
-                    vertexIndex += 4;
                 }
+                else
+                {
+                    transparentTriangles.Add(vertexIndex);
+                    transparentTriangles.Add(vertexIndex + 1);
+                    transparentTriangles.Add(vertexIndex + 2);
+                    transparentTriangles.Add(vertexIndex + 2);
+                    transparentTriangles.Add(vertexIndex + 1);
+                    transparentTriangles.Add(vertexIndex + 3);
+                }
+
+                vertexIndex += 4;
+
             }
         }
 
@@ -157,11 +239,14 @@ public class Chunk
 
     void CreateMesh()
     {
-        //Create the mesh, the monster mesh
 
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+
+        mesh.subMeshCount = 2;
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.SetTriangles(transparentTriangles.ToArray(), 1);
+
         mesh.uv = uvs.ToArray();
 
         mesh.RecalculateNormals();
