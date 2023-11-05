@@ -195,9 +195,9 @@ public class Chunk
 
         byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
 
-        bool solid = world.blocktypes[blockID].isSolid;
+       // Currently Unneeded:  bool solid = world.blocktypes[blockID].isSolid;
 
-        bool transparency_I_think = world.blocktypes[blockID].transparency_I_think; //TODO: transparency?
+        bool transparency_I_think = world.blocktypes[blockID].transparency_I_think; //TODO: transparency properly?
 
         bool unimportant = world.blocktypes[blockID].unimportant;
 
@@ -206,11 +206,20 @@ public class Chunk
             bool checkSolid = CheckVoxelSolid(pos + VoxelData.faceCheckVectors[p]);
             bool checkUnimportant = CheckVoxelUnimportant(pos + VoxelData.faceCheckVectors[p]);
 
+            /// Unimportant blocks dont need face rendered if anything but air is next to them 
+            /// 
+            /// ( air currently has no toggles set, so is technically not solid, impotant, and not transparent lol)
+            /// 
+            /// Important blocks need face rendered if anything but another important block next to them
+
+
+
             if (unimportant)
             {
-                if (checkSolid || checkUnimportant)
+                if (checkSolid || checkUnimportant) // checkUnimportant does not need to be here i think? leaving it in case of future problems
                 {
                     continue;
+                    // if the block is unimportant and the adjacent one is literally anything but air
                 }
             }
             else{
