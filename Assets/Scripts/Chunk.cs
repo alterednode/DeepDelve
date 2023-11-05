@@ -19,6 +19,8 @@ public class Chunk
     int vertexIndex = 0;
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
+    List<int> transparentTriangles = new List<int>();
+    Material[] materials = new Material[2];
     List<Vector2> uvs = new List<Vector2>();
 
     byte[,,] voxelMap = new byte[VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth];
@@ -53,25 +55,14 @@ public class Chunk
     void PopulateVoxelMap()
     {
 
-        
-            for (int x = 0; x < VoxelData.ChunkWidth; x++)
+
+        for (int x = 0; x < VoxelData.ChunkWidth; x++)
+        {
+            for (int z = 0; z < VoxelData.ChunkWidth; z++)
             {
-                for (int z = 0; z < VoxelData.ChunkWidth; z++)
-                {
-
-                ///TODO: maybe calc perlin noise here, to calc once per x,y coord.
-                /// this feels like the wrong spot to do it tho, but idk where else
-                /// we could do it.
-                
-
-               // float maxHightNoise = Perlin.Noise(x, z);
-
-
                 for (int y = 0; y < VoxelData.ChunkHeight; y++)
                 {
-
-                    voxelMap[x,y,z] = world.GetVoxel(new Vector3(x,y,z) + position);
-
+                    voxelMap[x, y, z] = world.GetVoxel(new Vector3(x, y, z) + position);
                 }
             }
         }
@@ -214,7 +205,7 @@ public class ChunkCoord
 
 
     }
-    public ChunkCoord(int _x, int _z): //TODO: learn why this is the right way, chatGPT spat this out :)
+    public ChunkCoord(int _x, int _z) : //TODO: learn why this is the right way, chatGPT spat this out :)
         this(_x, 0, _z)
     {
     }
