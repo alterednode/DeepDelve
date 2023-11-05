@@ -13,7 +13,7 @@ public static class VoxelData
     public static readonly int WorldWidthChunks = 10;  //TODO: update this
     public static readonly int WorldHeightChunks = 10; //TODO: update this
 
-    public static readonly float PosPerlinScaling = 10;
+    public static readonly float PosPerlinScaling = 9.3f;
     public static int WorldWidthInVoxels
     {
         get { return ChunkWidth * WorldWidthChunks; }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
@@ -194,15 +195,31 @@ public class Chunk
 
         byte blockID = voxelMap[(int)pos.x, (int)pos.y, (int)pos.z];
 
+        bool solid = world.blocktypes[blockID].isSolid;
+
         bool transparency_I_think = world.blocktypes[blockID].transparency_I_think; //TODO: transparency?
 
         bool unimportant = world.blocktypes[blockID].unimportant;
 
         for (int p = 0; p < 6; p++)
         {
+            bool checkSolid = CheckVoxelSolid(pos + VoxelData.faceCheckVectors[p]);
+            bool checkUnimportant = CheckVoxelUnimportant(pos + VoxelData.faceCheckVectors[p]);
 
-            if ((!unimportant && !CheckVoxelSolid(pos + VoxelData.faceCheckVectors[p])) || !(unimportant && CheckVoxelUnimportant(pos + VoxelData.faceCheckVectors[p])))
+            if (unimportant)
             {
+                if (checkSolid || checkUnimportant)
+                {
+                    continue;
+                }
+            }
+            else{
+                if(checkSolid && !checkUnimportant)
+                {
+                    continue;
+                }
+            }
+            
 
                 vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
                 vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
@@ -232,7 +249,7 @@ public class Chunk
 
                 vertexIndex += 4;
 
-            }
+            
         }
 
     }
