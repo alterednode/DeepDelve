@@ -73,3 +73,6 @@ crashlytics-build.properties
 
 #MacOS
 .DS_Store
+
+#Obsidian Config
+ObsidianDoc/TheDeepDelve/.obsidian/
