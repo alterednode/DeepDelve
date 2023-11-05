@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2ce1072bd2edb214ea028f7c4c394c2c, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.14339349, g: 0.15341045, b: 0.22602735, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -520,47 +520,48 @@ MonoBehaviour:
   player: {fileID: 351880038}
   spawnPosition: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: 2128f3524780f5243a69db27c2f2a8b6, type: 2}
+  transparentMaterial: {fileID: 0}
   blocktypes:
   - blockName: Air
     isSolid: 0
+    unimportant: 0
+    transparency_I_think: 1
     backFaceTexture: 0
     frontFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
-  - blockName: Bedrock
+  - blockName: Regolith
     isSolid: 1
+    unimportant: 1
+    transparency_I_think: 1
     backFaceTexture: 9
     frontFaceTexture: 9
     topFaceTexture: 9
     bottomFaceTexture: 9
     leftFaceTexture: 9
     rightFaceTexture: 9
-  - blockName: Stone
+  - blockName: Ore1
     isSolid: 1
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
-    bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
-  - blockName: Grass
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 4
+    frontFaceTexture: 4
+    topFaceTexture: 4
+    bottomFaceTexture: 4
+    leftFaceTexture: 4
+    rightFaceTexture: 4
+  - blockName: Ore2
     isSolid: 1
-    backFaceTexture: 2
-    frontFaceTexture: 2
-    topFaceTexture: 7
-    bottomFaceTexture: 1
-    leftFaceTexture: 2
-    rightFaceTexture: 2
-  - blockName: Furnace
-    isSolid: 1
-    backFaceTexture: 12
-    frontFaceTexture: 12
-    topFaceTexture: 15
-    bottomFaceTexture: 15
-    leftFaceTexture: 12
-    rightFaceTexture: 13
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 6
+    frontFaceTexture: 6
+    topFaceTexture: 6
+    bottomFaceTexture: 6
+    leftFaceTexture: 6
+    rightFaceTexture: 6
 --- !u!1 &1227515330
 GameObject:
   m_ObjectHideFlags: 0

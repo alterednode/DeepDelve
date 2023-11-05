@@ -13,6 +13,7 @@ public class World : MonoBehaviour
     public Vector3 spawnPosition; //set in Start()
 
     public Material material;
+    public Material transparentMaterial;
     public BlockType[] blocktypes;
 
     Chunk[,,] chunks = new Chunk[VoxelData.WorldWidthChunks, VoxelData.WorldHeightChunks, VoxelData.WorldWidthChunks];//REMINDER turn into 3d array to make vertical chunks
@@ -27,7 +28,7 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -39,6 +40,7 @@ public class World : MonoBehaviour
         return new ChunkCoord(x, y, z);
     }
 
+    /*
     void CheckViewDistance()
     {
         ChunkCoord coord = GetChunkCoordFromVector3(player.position);
@@ -67,19 +69,28 @@ public class World : MonoBehaviour
 
 
     }
+    */
 
     void GenerateWorld()
     {
 
         int horizMid = VoxelData.WorldWidthChunks / 2;
         int vertMid = VoxelData.WorldHeightChunks / 2;
-      
 
-        for (int x = horizMid - VoxelData.ViewDistanceInChunks; x < horizMid + VoxelData.ViewDistanceInChunks; x++)
-        { 
-            for (int z = horizMid - VoxelData.ViewDistanceInChunks; z < horizMid + VoxelData.ViewDistanceInChunks; z++) //here too
+
+        /* for (int x = horizMid - VoxelData.ViewDistanceInChunks; x < horizMid + VoxelData.ViewDistanceInChunks; x++)
+         { 
+             for (int z = horizMid - VoxelData.ViewDistanceInChunks; z < horizMid + VoxelData.ViewDistanceInChunks; z++) //here too
+             {
+                 for (int y = VoxelData.WorldHeightChunks - VoxelData.ViewDistanceInChunks; y < VoxelData.WorldHeightChunks; y++)
+                 {
+        */
+
+        for (int x = 0; x < VoxelData.WorldWidthChunks; x++)
+        {
+            for (int z = 0; z < VoxelData.WorldWidthChunks; z++)
             {
-                for (int y = VoxelData.WorldHeightChunks - VoxelData.ViewDistanceInChunks; y < VoxelData.WorldHeightChunks; y++)
+                for (int y = 0; y < VoxelData.WorldHeightChunks; y++)
                 {
                     CreateNewChunk(x, y, z);
                 }
@@ -99,19 +110,18 @@ public class World : MonoBehaviour
         }
 
 
+        float noise = Perlin.Noise(pos.x / VoxelData.ChunkWidth + 0.5f, pos.y / VoxelData.ChunkHeight + 0.5f, pos.z / VoxelData.ChunkWidth + 0.5f);
 
-        if (pos.y < 1)
-        {
-            return 1;
-        }
-        else if (pos.y == VoxelData.WorldHeightInVoxels / 2 - 1)//changed from tutorial
-            return 3;
-        else
+        if (noise < -.75f)
             return 2;
+        else if (noise < 0.75f)
+            return 1;
+        else
+            return 3;
 
 
 
-        
+
 
     }
 
@@ -154,6 +164,10 @@ public class BlockType
 
     public string blockName;
     public bool isSolid;
+    public bool unimportant;
+    public bool transparency_I_think;
+
+
 
     [Header("Texture Values")]
     public int backFaceTexture;

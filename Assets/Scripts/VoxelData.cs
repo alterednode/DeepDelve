@@ -23,8 +23,6 @@ public static class VoxelData
         get { return ChunkHeight * WorldHeightChunks; }
     }
 
-    public static readonly int ViewDistanceInChunks = 5;
-
     //texure atlas is n blocks square of same width blocks
     public static readonly int TextureAtlasSizeInBlocks = 4;
     public static float NormalizedBlockTextureSize
