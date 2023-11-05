@@ -40,7 +40,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            gameObject.transform.position -= -transform.forward;
+            gameObject.transform.position += -transform.forward;
         }
     }
 }
