@@ -139,12 +139,12 @@ public class World : MonoBehaviour
         //TODO: find better noise and improve cutoffs for where ores spawn
         float noise = Perlin.Noise(pos.x / VoxelData.PosPerlinScaling  + 0.5f, pos.y / VoxelData.PosPerlinScaling + 0.5f, pos.z / VoxelData.PosPerlinScaling + 0.5f);
         
-        if(noise > 0.8f)
+        if(noise > VoxelData.oreTreshold)
         {
             Debug.Log("ore1");
             return 2;
 
-        }else if (noise < -0.8f)
+        }else if (noise < -1 * VoxelData.oreTreshold)
         {
             Debug.Log("ore2");
             return 3;

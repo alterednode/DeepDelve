@@ -14,6 +14,7 @@ public static class VoxelData
     public static readonly int WorldHeightChunks = 10; //TODO: update this
 
     public static readonly float PosPerlinScaling = 9.3f;
+    public static readonly float oreTreshold = 0.7f; // used with perlin [-1,1] noise
     public static int WorldWidthInVoxels
     {
         get { return ChunkWidth * WorldWidthChunks; }
