@@ -75,4 +75,4 @@ crashlytics-build.properties
 .DS_Store
 
 #Obsidian Config
-/ObsidianDoc/TheDeepDelve/.obsidian/
+ObsidianDoc/TheDeepDelve/.obsidian/
