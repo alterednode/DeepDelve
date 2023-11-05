@@ -103,7 +103,8 @@ public class World : MonoBehaviour
 
         }
 
-        player.position = spawnPosition;
+        //account for offset of player
+        player.position = spawnPosition + new Vector3(.5f, .5f, .5f);
 
     }
 
