@@ -35,10 +35,33 @@ public class SelectionRegionHandler : MonoBehaviour
     public void CheckIfRealPositionMoved(Vector3 realPosition)
     {
         if (!endPoint.Equals(realPosition))
-        {
-
-
+        { 
             endPoint = realPosition;
+
+            int xmod = 1;
+            int ymod = 1;
+            int zmod = 1;
+
+            if (endPoint.x < startPoint.x)
+                xmod = -1;
+            if(endPoint.y < startPoint.y)
+                ymod = -1;
+            if(endPoint.z < startPoint.z)
+                zmod = -1;
+
+            correctedEndPoint.x = endPoint.x + (xmod * 0.5f);
+            correctedEndPoint.y = endPoint.y + (ymod * 0.5f);
+            correctedEndPoint.z = endPoint.z + (zmod * 0.5f);
+
+            correctedStartPoint.x = startPoint.x - (xmod * 0.5f);
+            correctedStartPoint.y = startPoint.y - (ymod * 0.5f);
+            correctedStartPoint.z = startPoint.z - (zmod * 0.5f);
+
+
+
+
+
+
 
             MakeMesh();
 
