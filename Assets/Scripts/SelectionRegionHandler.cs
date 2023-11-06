@@ -7,63 +7,29 @@ public class SelectionRegionHandler : MonoBehaviour
     Vector3 startPoint;
     Vector3 endPoint;
 
-    Vector3 correctedStartPoint;
-    Vector3 correctedEndPoint;
+    Vector3 maxPoint;
+    Vector3 minPoint;
 
-    MeshFilter meshFilter;
-    MeshRenderer meshRenderer;
-
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        meshFilter = gameObject.GetComponent<MeshFilter>();
-        meshRenderer = gameObject.GetComponent<MeshRenderer>();
-
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
-            
-        
+        gameObject.SetActive(false);
     }
 
     public void CheckIfRealPositionMoved(Vector3 realPosition)
     {
         if (!endPoint.Equals(realPosition))
-        { 
+        {
             endPoint = realPosition;
+            //this could probably be done better?
+            minPoint = Vector3.Min(startPoint, endPoint);
+            maxPoint = Vector3.Max(startPoint, endPoint);
 
-            int xmod = 1;
-            int ymod = 1;
-            int zmod = 1;
-
-            if (endPoint.x < startPoint.x)
-                xmod = -1;
-            if(endPoint.y < startPoint.y)
-                ymod = -1;
-            if(endPoint.z < startPoint.z)
-                zmod = -1;
-
-            correctedEndPoint.x = endPoint.x + (xmod * 0.5f);
-            correctedEndPoint.y = endPoint.y + (ymod * 0.5f);
-            correctedEndPoint.z = endPoint.z + (zmod * 0.5f);
-
-            correctedStartPoint.x = startPoint.x - (xmod * 0.5f);
-            correctedStartPoint.y = startPoint.y - (ymod * 0.5f);
-            correctedStartPoint.z = startPoint.z - (zmod * 0.5f);
+            minPoint = Vector3Int.FloorToInt(minPoint);
+            maxPoint = Vector3Int.CeilToInt(maxPoint);
 
 
 
-
-
-
-
-            MakeMesh();
+            SetSize();
 
         }
     }
@@ -74,10 +40,10 @@ public class SelectionRegionHandler : MonoBehaviour
         startPoint = _startPoint;
     }
 
-    void MakeMesh()
+    void SetSize()
     {
-
-
-
+        transform.position = (minPoint + maxPoint) / 2;
+        Vector3 size = new Vector3(Mathf.Abs(minPoint.x - maxPoint.x), Mathf.Abs(minPoint.y - maxPoint.y), Mathf.Abs(minPoint.z - maxPoint.z));
+        transform.localScale = size;
     }
 }
