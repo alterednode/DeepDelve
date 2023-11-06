@@ -697,7 +697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce8634da8fed8942a508d719b5a610e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simpleGen: 1
+  simpleGen: 0
   regenWorld: 0
   player: {fileID: 351880034}
   spawnPosition: {x: 0, y: 0, z: 0}
@@ -754,6 +754,9 @@ MonoBehaviour:
     bottomFaceTexture: 1
     leftFaceTexture: 1
     rightFaceTexture: 1
+  chunksToUpdate: []
+  isUpdatingChunks: 0
+  isCreatingChunks: 0
 --- !u!1 &1227515330
 GameObject:
   m_ObjectHideFlags: 0

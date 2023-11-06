@@ -29,24 +29,17 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         FinalizeSelectionRegion();
 
         //TODO: this desperately needs to be cleaned up lol
-        // also the checking if chunk already in list does not work :(
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
             byte newVoxel = 4;
             if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
             {
-                Debug.Log("Space - no shift");
                 world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), newVoxel);
 
             }
             else
             {
-
-
-                Debug.Log("Space - shift");
-
-
                 Vector3 minpoint = selectionRegionHandler.getMinPoint();
                 Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
 
@@ -59,7 +52,6 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                             Vector3 blockLocation = new Vector3(x, y, z);
                             if (!world.IsVoxelInWorld(blockLocation))
                             { // dont even bother with voxels out of the world.
-                                Debug.Log("out of world");
                                 return;
                             }
 
@@ -70,11 +62,9 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                             for (int i = 0; i < world.chunksToUpdate.Count; i++)
                             {
-                                Debug.Log("For loop even works");
-                                Debug.Log("For Loop stuff: " + world.chunksToUpdate[i].coord.ToString() + ", " + curChunk.coord.ToString());
                                 if (world.chunksToUpdate[i].HasSameCoord(curChunk))
                                 {
-                                    Debug.Log("chunk in array already");
+
                                     chunkInListAlready = true;
                                 }
                             }
@@ -83,8 +73,6 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                             {
                                 world.chunksToUpdate.Add(curChunk);
                             }
-
-
                             for (int i = 0; i < 6; i++)
                             {
                                 if (!curChunk.IsVoxelInChunk(blockLocation + VoxelData.faceCheckVectors[i]))
@@ -99,7 +87,6 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                                         {
                                             if (world.chunksToUpdate[j].HasSameCoord(adjChunk))
                                             {
-                                                Debug.Log("adjacent chunk in list already");
                                                 chunkInListAlready = true;
                                             }
                                         }
@@ -107,17 +94,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                                         if (!chunkInListAlready)
                                         {
                                             world.chunksToUpdate.Add(adjChunk);
-                                        }
 
-
-
-
-
-
-                                        {
-                                            world.chunksToUpdate.Add(adjChunk);
-
-                                            Debug.Log("added adjacent chunk to list");
                                         }
                                     }
                                 }
