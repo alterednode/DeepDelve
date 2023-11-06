@@ -9,7 +9,7 @@ using UnityEngine.PlayerLoop;
 public class World : MonoBehaviour
 {
 
-    public Transform player;
+    public GameObject player;
     public Vector3 spawnPosition; //set in Start()
 
     public Material material;
@@ -103,9 +103,9 @@ public class World : MonoBehaviour
 
         }
 
-        //account for offset of player
-        player.position = spawnPosition + new Vector3(.5f, .5f, .5f);
-
+       
+        player.transform.position = spawnPosition + new Vector3(.5f, .5f, .5f);  //account for offset of player
+        player.GetComponent<OnyxBasicPlayerMovement>().realPosiiton = player.transform.position;
     }
 
     IEnumerator CreateChunks()
@@ -142,12 +142,12 @@ public class World : MonoBehaviour
         
         if(noise > VoxelData.oreTreshold)
         {
-            Debug.Log("ore1");
+            //Debug.Log("ore1");
             return 2;
 
         }else if (noise < -1 * VoxelData.oreTreshold)
         {
-            Debug.Log("ore2");
+            //Debug.Log("ore2");
             return 3;
         }
         else

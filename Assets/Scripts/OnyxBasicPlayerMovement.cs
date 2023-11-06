@@ -1,47 +1,120 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
+    public World world;
+    public float moveSpeed = 10f;
+    public Vector3 realPosiiton;
+    public GameObject virtualCamera;
+    public float destinationProx = 1;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = (GameObject.Find("World").GetComponent<World>().spawnPosition + new Vector3(.5f, .5f, .5f));
+
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        Debug.Log(destinationProx + ", " + Vector3.Distance(transform.position, realPosiiton) );
+        
+
+        if (destinationProx < 1)
         {
-            gameObject.transform.position = (transform.position + transform.up);
+            destinationProx += Time.deltaTime * moveSpeed;
+            destinationProx = Math.Clamp(destinationProx, 0f, 1f);
+            transform.position = Vector3.Lerp(transform.position, realPosiiton, destinationProx);
+        }
+            
+        if (destinationProx == 1)
+        {
+            Vector3 direction = GetNearestHorizontalVector3(virtualCamera.transform);
+            DoMovement(direction);
+            if (Vector3.Distance(transform.position, realPosiiton) > 0)
+            {
+                destinationProx = 0f;
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+
+    }
+
+    void DoMovement(Vector3 direction)
+    {
+
+        if (Input.GetKey(KeyCode.W))
         {
-            gameObject.transform.position = (transform.position - transform.up);
+            realPosiiton += direction;
+
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKey(KeyCode.S))
         {
-            transform.Rotate(0, 90, 0);
+            realPosiiton += -direction;
+
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-           transform.Rotate(0,-90,0);
+
+            realPosiiton += Quaternion.Euler(0, -90, 0) * direction;
+
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKey(KeyCode.D))
         {
-            gameObject.transform.position = (transform.position + transform.forward);
+
+            realPosiiton += Quaternion.Euler(0, 90, 0) * direction;
+
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            gameObject.transform.position = (transform.position - transform.forward);
+
+            realPosiiton += -Vector3.up;
+
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            realPosiiton += Vector3.up;
+        }
+
+
+
+    }
+
+    Vector3 GetNearestHorizontalVector3(Transform transform)
+    {
+
+        float[] dirAngles = new float[4];
+
+        dirAngles[0] = Vector3.Angle(transform.forward, Vector3.forward);
+        dirAngles[1] = Vector3.Angle(transform.forward, -Vector3.right);
+        dirAngles[2] = Vector3.Angle(transform.forward, Vector3.right);
+        dirAngles[3] = Vector3.Angle(transform.forward, -Vector3.forward);
+
+
+        int pos = 0;
+        for (int i = 0; i < dirAngles.Length; i++)
+        {
+            if (dirAngles[i] < dirAngles[pos]) { pos = i; }
+        }
+        switch (pos)
+        {
+            case 0:
+                return Vector3.forward;
+            case 1:
+                return -Vector3.right;
+            case 2:
+                return Vector3.right;
+            case 3:
+                return -Vector3.forward;
+            default: return Vector3.zero;
         }
     }
 }
