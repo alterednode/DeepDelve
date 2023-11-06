@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
@@ -27,7 +25,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         if (destinationProx < 1)
         {
             destinationProx += Time.deltaTime * moveSpeed;
-            destinationProx = Math.Clamp(destinationProx, 0f, 1f);
+            destinationProx = Mathf.Clamp(destinationProx, 0f, 1f);
             transform.position = Vector3.Lerp(transform.position, realPosiiton, destinationProx);
         }
             
