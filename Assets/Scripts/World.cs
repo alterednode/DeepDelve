@@ -101,6 +101,10 @@ public class World : MonoBehaviour
         return chunks[x, y, z];
 
     }
+
+    /// <summary>
+    /// Creates new chunks based on the world's width and height
+    /// </summary>
     void GenerateWorld()
     {
 
@@ -119,7 +123,10 @@ public class World : MonoBehaviour
         player.GetComponent<OnyxBasicPlayerMovement>().realPosition = player.transform.position;
     }
 
-
+    /// <summary>
+    /// Runs the Init() part of a chunk
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CreateChunks()
     {
         isCreatingChunks = true;
@@ -132,7 +139,11 @@ public class World : MonoBehaviour
 
         isCreatingChunks = false;
     }
-
+    
+    /// <summary>
+    /// Updates the mesh of a chunk
+    /// </summary>
+    /// <returns></returns>
     IEnumerator UpdateChunks()
     {
         isUpdatingChunks = true;
@@ -147,6 +158,17 @@ public class World : MonoBehaviour
         isUpdatingChunks = false;
     }
 
+    /// <summary>
+    /// Used for world generation, decides what a voxel is
+    /// </summary>
+    /// <param name="pos">
+    /// Coordinate of voxel to get in Voxels
+    /// </param>
+    /// <returns>
+    /// byte BlockID
+    /// </returns>
+
+    //maybe change to choose / generate voxel
     public byte GetVoxel(Vector3 pos)
     {
 
@@ -188,6 +210,17 @@ public class World : MonoBehaviour
         }
     }
 
+    /// <summary>
+    ///  Adds a new chunk to the world, and adds it to the creation queue
+    /// </summary>
+    /// <param name="x">
+    /// x Coordinate in chunks
+    /// </param>
+    /// <param name="y">
+    /// y Coordinate in chunks
+    /// </param>
+    /// z Coordinate in chunks
+    /// <param name="z"></param>
     void CreateNewChunk(int x, int y, int z)
     {
         chunks[x, y, z] = new Chunk(new ChunkCoord(x, y, z), this);

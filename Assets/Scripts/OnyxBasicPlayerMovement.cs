@@ -110,7 +110,9 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Detect if the player starts making a selection region (presses shift)
+    /// </summary>
     void HandleSelectionRegionStart()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -120,7 +122,9 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Call functions from the selection region handler to deal with everything else, after we have dealt with movement of the player
+    /// </summary>
     void FinalizeSelectionRegion()
     {
 

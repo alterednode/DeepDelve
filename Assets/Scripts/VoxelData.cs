@@ -7,6 +7,10 @@ public static class VoxelData
     //Read these from a config file?
     //maybe not chunk hieght/width
 
+    // amount of chunks to load at first
+    public static readonly int startAreaWidth = 4;
+    public static readonly int startAreaHeight = 2;
+
     public static readonly int ChunkWidth = 16; // Width of chunk in blocks
     public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
     
@@ -31,6 +35,9 @@ public static class VoxelData
         get { return 1f / (float)TextureAtlasSizeInBlocks; }
     }
 
+    /// <summary>
+    /// Vertecies of a 1x1x1 cube
+    /// </summary>
     public static readonly Vector3[] voxelVerts = new Vector3[8] {
 
         new Vector3(0.0f, 0.0f, 0.0f),
@@ -43,7 +50,10 @@ public static class VoxelData
         new Vector3(0.0f, 1.0f, 1.0f),
 
     };
-
+    
+    /// <summary>
+    /// Directions of each face of a cube
+    /// </summary>
     public static readonly Vector3[] faceCheckVectors = new Vector3[6] {
 
         new Vector3(0.0f, 0.0f, -1.0f),
@@ -55,6 +65,9 @@ public static class VoxelData
 
     };
 
+    /// <summary>
+    /// nessecary triangles to make a cube
+    /// </summary>
     public static readonly int[,] voxelTris = new int[6, 4] {
 
         // Back, Front, Top, Bottom, Left, Right
@@ -69,6 +82,9 @@ public static class VoxelData
 
 	};
 
+    /// <summary>
+    /// Uvs vertecies needed for a face
+    /// </summary>
     public static readonly Vector2[] voxelUvs = new Vector2[4] {
 
         new Vector2 (0.0f, 0.0f),

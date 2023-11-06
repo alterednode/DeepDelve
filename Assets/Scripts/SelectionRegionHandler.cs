@@ -25,32 +25,40 @@ public class SelectionRegionHandler : MonoBehaviour
         if (!endPoint.Equals(realPosition))
         {
             endPoint = realPosition;
-            //this could probably be done better?
+
             minPoint = Vector3.Min(startPoint, endPoint);
             maxPoint = Vector3.Max(startPoint, endPoint);
 
-            // wanted to use
             minPoint = Vector3Int.FloorToInt(minPoint);
             maxPoint = Vector3Int.CeilToInt(maxPoint);
 
 
 
-            SetSize();
+            MoveAndScale();
 
         }
     }
 
+    /// <summary>
+    /// Set start point to the position
+    /// </summary>
+    /// <param name="_startPoint"></param>
     public void SetStartPoint(Vector3 _startPoint)
     {
-        endPoint = -_startPoint; // ensure that somehow endPoint isnt in an annoying spot at when CheckIfRealPositionMoved run
+        endPoint = -_startPoint; // ensure that somehow endPoint isnt in an annoying spot when CheckIfRealPositionMoved run
         startPoint = _startPoint;
     }
 
-    void SetSize()
+
+    void MoveAndScale()
     {
+        // put the center between the two points
         transform.position = (minPoint + maxPoint) / 2;
+        //sidze is the difference between the two points
         Vector3 size = new Vector3(Mathf.Abs(minPoint.x - maxPoint.x), Mathf.Abs(minPoint.y - maxPoint.y), Mathf.Abs(minPoint.z - maxPoint.z));
+        // add a lil bit to the scale to avoid zfighting 
         size += new Vector3(extraSize, extraSize, extraSize);
+        // do the thing
         transform.localScale = size;
     }
 }
