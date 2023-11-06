@@ -2,13 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+using Cinemachine;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
+
     public World world;
     public float moveSpeed;
     public Vector3 realPosition;
+
+
+    public float cameraMoveSpeed = 300;
     public GameObject virtualCamera;
+    public CinemachinePOV cinemachinePOV;
     float destinationProx = 1;
     public GameObject selectionRegionIndicator;
     SelectionRegionHandler selectionRegionHandler;
@@ -16,12 +23,16 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
     private void Start()
     {
         selectionRegionHandler = selectionRegionIndicator.GetComponent<SelectionRegionHandler>();
+        cinemachinePOV = virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
     }
 
 
 
     private void Update()
     {
+
+        ChangeCameraRotationSpeed();
+
         HandleSelectionRegionStart();
 
         HandleMoving();
@@ -128,6 +139,22 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         }
 
     }
+
+    void ChangeCameraRotationSpeed()
+    {
+        if (Input.GetMouseButton(1))
+        {
+            cinemachinePOV.m_VerticalAxis.m_MaxSpeed = cameraMoveSpeed;
+            cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = cameraMoveSpeed;
+        }
+        else
+        {
+            cinemachinePOV.m_VerticalAxis.m_MaxSpeed = 0;
+            cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = 0;
+
+        }
+    }
+
     /// <summary>
     /// Detect if the player starts making a selection region (presses shift)
     /// </summary>
