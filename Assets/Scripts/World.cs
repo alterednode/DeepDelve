@@ -55,7 +55,7 @@ public class World : MonoBehaviour
 
 
 
-        if (chunksToCreate.Count > 0 && !isUpdatingChunks)
+        if (chunksToUpdate.Count > 0 && !isUpdatingChunks)
 
             StartCoroutine("UpdateChunks");
 
@@ -123,6 +123,7 @@ public class World : MonoBehaviour
         isUpdatingChunks = true;
         while (chunksToUpdate.Count > 0)
         {
+            Debug.Log("Updating chunk");
             chunksToUpdate[0].UpdateChunk();
             chunksToUpdate.RemoveAt(0);
             yield return null;

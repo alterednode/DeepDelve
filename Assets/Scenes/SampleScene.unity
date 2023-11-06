@@ -748,12 +748,12 @@ MonoBehaviour:
     isSolid: 1
     unimportant: 0
     transparency_I_think: 0
-    backFaceTexture: 2
-    frontFaceTexture: 2
-    topFaceTexture: 2
-    bottomFaceTexture: 2
-    leftFaceTexture: 2
-    rightFaceTexture: 2
+    backFaceTexture: 1
+    frontFaceTexture: 1
+    topFaceTexture: 1
+    bottomFaceTexture: 1
+    leftFaceTexture: 1
+    rightFaceTexture: 1
 --- !u!1 &1227515330
 GameObject:
   m_ObjectHideFlags: 0

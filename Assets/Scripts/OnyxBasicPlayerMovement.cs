@@ -27,6 +27,66 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         FinalizeSelectionRegion();
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            byte newVoxel = 4;
+            if (!Input.GetKey(KeyCode.LeftShift))
+            {
+                world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), newVoxel);
+                return;
+            }
+
+
+            Vector3 minpoint = selectionRegionHandler.getMinPoint();
+            Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
+
+            for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
+            {
+
+                for (int y = (int)minpoint.y; y < (int)maxpoint.y; y++)
+                {
+                    for (int z = (int)minpoint.x; z < (int)maxpoint.z; z++)
+                    {
+                        Vector3 blockLocation = new Vector3(x, y, z);
+                        if (!world.IsVoxelInWorld(blockLocation))
+                        { // dont even bother with voxels out of the world.
+                            return;
+                        }
+
+                        Chunk curChunk = world.GetChunkFromVector3(blockLocation);
+                        curChunk.DirectlySetVoxel(blockLocation, newVoxel);
+                        if (!world.chunksToUpdate.Contains(curChunk))
+                        {
+                            world.chunksToUpdate.Add(curChunk);
+                            Debug.Log("added chunk to list");
+                        }
+
+                        for (int i = 0; i < 6; i++)
+                        {
+                            if (!curChunk.IsVoxelInChunk(blockLocation + VoxelData.faceCheckVectors[i]))
+                            {
+                                if (world.IsVoxelInWorld(blockLocation + VoxelData.faceCheckVectors[i]))
+                                {
+                                 Chunk adjChunk =   world.GetChunkFromVector3(blockLocation + VoxelData.faceCheckVectors[i]);
+
+                                    if (!world.chunksToUpdate.Contains(adjChunk))
+                                    {
+                                        world.chunksToUpdate.Add(adjChunk);
+
+                                        Debug.Log("added adjacent chunk to list");
+                                       }
+                                }
+                        }
+
+                        }
+
+
+                    }
+
+                }
+            }
+        }
+
     }
 
     void HandleSelectionRegionStart()
@@ -46,7 +106,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         {
             selectionRegionHandler.CheckIfRealPositionMoved(realPosition);
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift)) {
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
             selectionRegionIndicator.SetActive(false);
         }
     }
@@ -54,7 +115,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     void HandleMoving()
     {
-        Debug.Log(destinationProx + ", " + Vector3.Distance(transform.position, realPosition));
+        //Debug.Log(destinationProx + ", " + Vector3.Distance(transform.position, realPosition));
 
 
         if (destinationProx < 1)

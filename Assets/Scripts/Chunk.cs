@@ -95,6 +95,7 @@ public class Chunk
             }
         }
 
+
         CreateMesh();
 
     }
@@ -103,8 +104,10 @@ public class Chunk
     {
 
         vertexIndex = 0;
+        
         vertices.Clear();
         triangles.Clear();
+        transparentTriangles.Clear();
         uvs.Clear();
 
     }
@@ -125,25 +128,24 @@ public class Chunk
         }
 
     }
-
-    public bool isActive
-    {
-        get { return chunkObject.activeSelf; }
-        set { chunkObject.SetActive(value); }
-    }
-
     public Vector3 position
     {
         get { return chunkObject.transform.position; }
     }
 
 
-    bool IsVoxelInChunk(int x, int y, int z)
+    public bool IsVoxelInChunk(int x, int y, int z)
     {
         if (x < 0 || x > VoxelData.ChunkWidth - 1 || y < 0 || y > VoxelData.ChunkHeight - 1 || z < 0 || z > VoxelData.ChunkWidth - 1)
             return false;
         else
             return true;
+
+    }
+    public bool IsVoxelInChunk(Vector3 pos)
+    {
+        return IsVoxelInChunk(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+
 
     }
 
@@ -156,6 +158,7 @@ public class Chunk
         int zCheck = Mathf.FloorToInt(pos.z);
 
         xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(chunkObject.transform.position.y);
         zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
 
         voxelMap[xCheck, yCheck, zCheck] = newID;
@@ -164,6 +167,19 @@ public class Chunk
 
         UpdateChunk();
 
+    }
+
+    public void DirectlySetVoxel(Vector3 pos, byte newID)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(chunkObject.transform.position.y);
+        zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        voxelMap[xCheck, yCheck, zCheck] = newID;
     }
 
     void UpdateSurroundingVoxels(int x, int y, int z)
@@ -175,10 +191,10 @@ public class Chunk
         {
 
             Vector3 currentVoxel = thisVoxel + VoxelData.faceCheckVectors[p];
-
+            
             if (!IsVoxelInChunk((int)currentVoxel.x, (int)currentVoxel.y, (int)currentVoxel.z))
             {
-
+                if(world.IsVoxelInWorld(currentVoxel + position)) 
                 world.GetChunkFromVector3(currentVoxel + position).UpdateChunk();
 
             }
@@ -305,7 +321,6 @@ public class Chunk
 
     void CreateMesh()
     {
-
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
 
