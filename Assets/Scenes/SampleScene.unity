@@ -697,6 +697,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce8634da8fed8942a508d719b5a610e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simpleGen: 1
+  regenWorld: 0
   player: {fileID: 351880034}
   spawnPosition: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: 2128f3524780f5243a69db27c2f2a8b6, type: 2}

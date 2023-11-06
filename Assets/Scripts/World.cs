@@ -8,6 +8,10 @@ using UnityEngine.PlayerLoop;
 
 public class World : MonoBehaviour
 {
+    public bool simpleGen = false;
+    public bool regenWorld = false;
+
+
     public GameObject player;
     public Vector3 spawnPosition; //set in Start()
 
@@ -21,10 +25,10 @@ public class World : MonoBehaviour
         VoxelData.WorldWidthChunks
     ];
 
-    List<Chunk> chunksToUpdate = new List<Chunk>();
+    public List<Chunk> chunksToUpdate = new List<Chunk>();
     private bool isUpdatingChunks = false;
 
-    List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
+    public List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
     private bool isCreatingChunks = false;
 
     private void Start()
@@ -42,15 +46,24 @@ public class World : MonoBehaviour
 
     private void Update()
     {
+        if (regenWorld)
+        {
+            regenWorld = false;
+            GenerateWorld();
+        }
+
+
+
+
         if (chunksToCreate.Count > 0 && !isUpdatingChunks)
-        {
+
             StartCoroutine("UpdateChunks");
-        }
-        else
-        {
-            if (chunksToCreate.Count > 0 && !isCreatingChunks && !isUpdatingChunks)
-                StartCoroutine("CreateChunks");
-        }
+
+
+
+        if (chunksToCreate.Count > 0 && !isCreatingChunks)
+            StartCoroutine("CreateChunks");
+
     }
 
     public ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -111,19 +124,26 @@ public class World : MonoBehaviour
         while (chunksToUpdate.Count > 0)
         {
             chunksToUpdate[0].UpdateChunk();
-            chunksToCreate.RemoveAt(0);
+            chunksToUpdate.RemoveAt(0);
             yield return null;
         }
 
-        isCreatingChunks = false;
+        isUpdatingChunks = false;
     }
 
     public byte GetVoxel(Vector3 pos)
     {
+
         if (!IsVoxelInWorld(pos))
         {
             return 0;
         }
+
+        if (simpleGen)
+        {
+            return 1;
+        }
+
 
         if (pos.y > VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
         {
@@ -178,7 +198,7 @@ public class World : MonoBehaviour
             return false;
     }
 
-    bool IsVoxelInWorld(Vector3 pos)
+    public bool IsVoxelInWorld(Vector3 pos)
     {
         if (
             pos.x >= 0
