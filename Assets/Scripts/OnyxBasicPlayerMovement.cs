@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Cinemachine;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
@@ -14,24 +16,44 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
 
     public float cameraMoveSpeed = 300;
+    public float zoomSpeed = 70;
+    public float minZoom = 1;
+    public float maxZoom = 30;
     public GameObject virtualCamera;
+    public CinemachineFramingTransposer cinemachineFramingTransposer;
     public CinemachinePOV cinemachinePOV;
+
+
+
     float destinationProx = 1;
     public GameObject selectionRegionIndicator;
     SelectionRegionHandler selectionRegionHandler;
+
+    Vector3[] compassVectors = new Vector3[]
+        {
+        Vector3.forward,
+        -Vector3.right,
+        Vector3.right,
+        -Vector3.forward,
+        Vector3.forward + -Vector3.right,
+        -Vector3.forward + -Vector3.right,
+        Vector3.forward + Vector3.right,
+        -Vector3.forward + Vector3.right,
+        };
 
     private void Start()
     {
         selectionRegionHandler = selectionRegionIndicator.GetComponent<SelectionRegionHandler>();
         cinemachinePOV = virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
+
+        cinemachineFramingTransposer = virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineFramingTransposer>();
     }
 
 
 
     private void Update()
     {
-
-        ChangeCameraRotationSpeed();
+        HandleCamera();
 
         HandleSelectionRegionStart();
 
@@ -140,19 +162,43 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     }
 
-    void ChangeCameraRotationSpeed()
+    private void HandleCamera()
     {
+
         if (Input.GetMouseButton(1))
         {
-            cinemachinePOV.m_VerticalAxis.m_MaxSpeed = cameraMoveSpeed;
-            cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = cameraMoveSpeed;
+            ChangeCameraRotationSpeedTo(cameraMoveSpeed);
+            ChangeCameraDistanceFromPlayer();
         }
         else
         {
-            cinemachinePOV.m_VerticalAxis.m_MaxSpeed = 0;
-            cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = 0;
-
+            ChangeCameraRotationSpeedTo(0);
         }
+    }
+
+    private void ChangeCameraDistanceFromPlayer()
+    {
+
+        
+        
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            Debug.Log("increacing distance");
+            cinemachineFramingTransposer.m_CameraDistance += cinemachineFramingTransposer.m_CameraDistance * Time.deltaTime * zoomSpeed;
+            cinemachineFramingTransposer.m_CameraDistance = Mathf.Clamp(cinemachineFramingTransposer.m_CameraDistance, minZoom, maxZoom);
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            Debug.Log("decreacing distance");
+            cinemachineFramingTransposer.m_CameraDistance -= cinemachineFramingTransposer.m_CameraDistance * Time.deltaTime * zoomSpeed;
+            cinemachineFramingTransposer.m_CameraDistance = Mathf.Clamp(cinemachineFramingTransposer.m_CameraDistance, minZoom, maxZoom);
+        }
+    }
+
+    void ChangeCameraRotationSpeedTo(float speed)
+    {
+            cinemachinePOV.m_VerticalAxis.m_MaxSpeed = speed;
+            cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = speed;
     }
 
     /// <summary>
@@ -250,12 +296,14 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     Vector3 GetNearestHorizontalVector3(Transform transform)
     {
-        float[] dirAngles = new float[4];
+        float[] dirAngles = new float[8];
 
-        dirAngles[0] = Vector3.Angle(transform.forward, Vector3.forward);
-        dirAngles[1] = Vector3.Angle(transform.forward, -Vector3.right);
-        dirAngles[2] = Vector3.Angle(transform.forward, Vector3.right);
-        dirAngles[3] = Vector3.Angle(transform.forward, -Vector3.forward);
+        // Order:  N,W,E,S,NW,SW, NE, SE
+        for (int i = 0; i < dirAngles.Length; i++)
+        {
+            dirAngles[i] = Vector3.Angle(transform.forward, compassVectors[i]);
+        }
+
 
         int pos = 0;
         for (int i = 0; i < dirAngles.Length; i++)
@@ -265,19 +313,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                 pos = i;
             }
         }
-        switch (pos)
-        {
-            case 0:
-                return Vector3.forward;
-            case 1:
-                return -Vector3.right;
-            case 2:
-                return Vector3.right;
-            case 3:
-                return -Vector3.forward;
-            default:
-                return Vector3.zero;
-        }
+
+        return compassVectors[pos];
     }
 
 }
