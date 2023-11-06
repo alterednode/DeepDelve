@@ -9,13 +9,13 @@ public static class VoxelData
 
     // amount of chunks to load at first
     public static readonly int startAreaWidth = 4;
-    public static readonly int startAreaHeight = 2;
+    public static readonly int startAreaHeight = 4;
 
     public static readonly int ChunkWidth = 16; // Width of chunk in blocks
     public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
     
-    public static readonly int WorldWidthChunks = 10;  //TODO: update this
-    public static readonly int WorldHeightChunks = 2; //TODO: update this
+    public static readonly int WorldWidthChunks = 50;  //TODO: update this
+    public static readonly int WorldHeightChunks = 50; //TODO: update this
 
     public static readonly float PosPerlinScaling = 9.3f;
     public static readonly float oreTreshold = 0.7f; // used with perlin [-1,1] noise

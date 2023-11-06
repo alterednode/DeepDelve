@@ -108,11 +108,14 @@ public class World : MonoBehaviour
     void GenerateWorld()
     {
 
-        for (int x = 0; x < VoxelData.WorldWidthChunks; x++)
+        int horizMidPoint = VoxelData.WorldWidthChunks / 2;
+
+
+        for (int x = horizMidPoint - VoxelData.startAreaWidth; x < horizMidPoint + VoxelData.startAreaWidth; x++)
         {
-            for (int z = 0; z < VoxelData.WorldWidthChunks; z++)
+            for (int z = horizMidPoint - VoxelData.startAreaWidth; z < horizMidPoint + VoxelData.startAreaWidth; z++)
             {
-                for (int y = 0; y < VoxelData.WorldHeightChunks; y++)
+                for (int y = VoxelData.WorldHeightChunks -  VoxelData.startAreaHeight * 2 ; y < VoxelData.WorldHeightChunks; y++)
                 {
                     CreateNewChunk(x, y, z);
                 }
@@ -132,6 +135,7 @@ public class World : MonoBehaviour
         isCreatingChunks = true;
         while (chunksToCreate.Count > 0)
         {
+            Debug.Log("Initalizing chunk");
             chunks[chunksToCreate[0].x, chunksToCreate[0].y, chunksToCreate[0].z].Init();
             chunksToCreate.RemoveAt(0);
             yield return null;
@@ -174,6 +178,7 @@ public class World : MonoBehaviour
 
         if (!IsVoxelInWorld(pos))
         {
+            Debug.LogWarning("Tried to generate Voxel not in world at: " + pos.ToString());
             return 0;
         }
 
