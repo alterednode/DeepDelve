@@ -12,6 +12,9 @@ public class SelectionRegionHandler : MonoBehaviour
    Vector3 maxPoint;
    Vector3 minPoint;
 
+    public Vector3 getMinPoint() { return minPoint; }
+    public Vector3 getMaxPoint() {  return maxPoint; }
+
     private void Start()
     {
         gameObject.SetActive(false);

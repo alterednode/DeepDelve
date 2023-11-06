@@ -19,7 +19,10 @@ public class World : MonoBehaviour
         VoxelData.WorldWidthChunks,
         VoxelData.WorldHeightChunks,
         VoxelData.WorldWidthChunks
-    ]; //REMINDER turn into 3d array to make vertical chunks
+    ];
+
+    List<Chunk> chunksToUpdate = new List<Chunk>();
+    private bool isUpdatingChunks = false;
 
     List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
     private bool isCreatingChunks = false;
@@ -39,11 +42,18 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        if (chunksToCreate.Count > 0 && !isCreatingChunks)
-            StartCoroutine("CreateChunks");
+        if (chunksToCreate.Count > 0 && !isUpdatingChunks)
+        {
+            StartCoroutine("UpdateChunks");
+        }
+        else
+        {
+            if (chunksToCreate.Count > 0 && !isCreatingChunks && !isUpdatingChunks)
+                StartCoroutine("CreateChunks");
+        }
     }
 
-    ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
+    public ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
     {
         int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
         int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight);
@@ -52,49 +62,19 @@ public class World : MonoBehaviour
         return new ChunkCoord(x, y, z);
     }
 
-    /*
-    void CheckViewDistance()
+    public Chunk GetChunkFromVector3(Vector3 pos)
     {
-        ChunkCoord coord = GetChunkCoordFromVector3(player.position);
 
-        for(int x = coord.x - VoxelData.ViewDistanceInChunks; x < coord.x + VoxelData.ViewDistanceInChunks; x++)
-        {
-            for (int z = coord.z - VoxelData.ViewDistanceInChunks; z < coord.z + VoxelData.ViewDistanceInChunks; z++)
-            {
-                for (int y = coord.y - VoxelData.ViewDistanceInChunks; y < coord.y + VoxelData.ViewDistanceInChunks; y++)
-                {
-                    if (IsChunkInWorld(coord))
-                    {
-                        if (chunks[x, y, z] == null)
-                        {
-                            CreateNewChunk(x, y, z);
-                        }
-                    }
-
-
-
-
-
-                }
-            }
-        }
-
+        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
+        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkWidth);
+        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
+        return chunks[x, y, z];
 
     }
-    */
-
     void GenerateWorld()
     {
         int horizMid = VoxelData.WorldWidthChunks / 2;
         int vertMid = VoxelData.WorldHeightChunks / 2;
-
-        /* for (int x = horizMid - VoxelData.ViewDistanceInChunks; x < horizMid + VoxelData.ViewDistanceInChunks; x++)
-         {
-             for (int z = horizMid - VoxelData.ViewDistanceInChunks; z < horizMid + VoxelData.ViewDistanceInChunks; z++) //here too
-             {
-                 for (int y = VoxelData.WorldHeightChunks - VoxelData.ViewDistanceInChunks; y < VoxelData.WorldHeightChunks; y++)
-                 {
-        */
 
         for (int x = 0; x < VoxelData.WorldWidthChunks; x++)
         {
@@ -111,13 +91,26 @@ public class World : MonoBehaviour
         player.GetComponent<OnyxBasicPlayerMovement>().realPosition = player.transform.position;
     }
 
+
     IEnumerator CreateChunks()
     {
         isCreatingChunks = true;
-        Debug.Log("Creating Chunk");
         while (chunksToCreate.Count > 0)
         {
             chunks[chunksToCreate[0].x, chunksToCreate[0].y, chunksToCreate[0].z].Init();
+            chunksToCreate.RemoveAt(0);
+            yield return null;
+        }
+
+        isCreatingChunks = false;
+    }
+
+    IEnumerator UpdateChunks()
+    {
+        isUpdatingChunks = true;
+        while (chunksToUpdate.Count > 0)
+        {
+            chunksToUpdate[0].UpdateChunk();
             chunksToCreate.RemoveAt(0);
             yield return null;
         }

@@ -76,7 +76,7 @@ public class Chunk
 
     }
 
-    void UpdateChunk()
+    public void UpdateChunk()
     {
 
         ClearMeshData();
@@ -144,6 +144,46 @@ public class Chunk
             return false;
         else
             return true;
+
+    }
+
+
+    public void EditVoxel(Vector3 pos, byte newID)
+    {
+
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        voxelMap[xCheck, yCheck, zCheck] = newID;
+
+        UpdateSurroundingVoxels(xCheck, yCheck, zCheck);
+
+        UpdateChunk();
+
+    }
+
+    void UpdateSurroundingVoxels(int x, int y, int z)
+    {
+
+        Vector3 thisVoxel = new Vector3(x, y, z);
+
+        for (int p = 0; p < 6; p++)
+        {
+
+            Vector3 currentVoxel = thisVoxel + VoxelData.faceCheckVectors[p];
+
+            if (!IsVoxelInChunk((int)currentVoxel.x, (int)currentVoxel.y, (int)currentVoxel.z))
+            {
+
+                world.GetChunkFromVector3(currentVoxel + position).UpdateChunk();
+
+            }
+
+        }
 
     }
     bool CheckVoxelSolid(Vector3 pos)
