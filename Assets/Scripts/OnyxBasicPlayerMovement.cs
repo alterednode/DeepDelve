@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
@@ -79,7 +78,6 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     void GetMovement(Vector3 direction)
     {
-
         if (Input.GetKey(KeyCode.W))
         {
             realPosition += direction;
@@ -109,21 +107,17 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
 
-            realPosition += -Vector3.up;
+            realPosiiton += -Vector3.up;
 
         }
         if (Input.GetKey(KeyCode.Space))
         {
             realPosition += Vector3.up;
         }
-
-
-
     }
 
     Vector3 GetNearestHorizontalVector3(Transform transform)
     {
-
         float[] dirAngles = new float[4];
 
         dirAngles[0] = Vector3.Angle(transform.forward, Vector3.forward);
@@ -131,11 +125,13 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         dirAngles[2] = Vector3.Angle(transform.forward, Vector3.right);
         dirAngles[3] = Vector3.Angle(transform.forward, -Vector3.forward);
 
-
         int pos = 0;
         for (int i = 0; i < dirAngles.Length; i++)
         {
-            if (dirAngles[i] < dirAngles[pos]) { pos = i; }
+            if (dirAngles[i] < dirAngles[pos])
+            {
+                pos = i;
+            }
         }
         switch (pos)
         {
@@ -147,7 +143,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                 return Vector3.right;
             case 3:
                 return -Vector3.forward;
-            default: return Vector3.zero;
+            default:
+                return Vector3.zero;
         }
     }
 

@@ -8,7 +8,6 @@ using UnityEngine.PlayerLoop;
 
 public class World : MonoBehaviour
 {
-
     public GameObject player;
     public Vector3 spawnPosition; //set in Start()
 
@@ -16,18 +15,26 @@ public class World : MonoBehaviour
     public Material transparentMaterial;
     public BlockType[] blocktypes;
 
-    Chunk[,,] chunks = new Chunk[VoxelData.WorldWidthChunks, VoxelData.WorldHeightChunks, VoxelData.WorldWidthChunks];//REMINDER turn into 3d array to make vertical chunks
+    Chunk[,,] chunks = new Chunk[
+        VoxelData.WorldWidthChunks,
+        VoxelData.WorldHeightChunks,
+        VoxelData.WorldWidthChunks
+    ]; //REMINDER turn into 3d array to make vertical chunks
 
     List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
     private bool isCreatingChunks = false;
+
     private void Start()
     {
         Debug.Log("starting start");
-        spawnPosition = new Vector3(VoxelData.WorldWidthInVoxels / 2, VoxelData.WorldHeightInVoxels + 5, VoxelData.WorldWidthInVoxels / 2);
+        spawnPosition = new Vector3(
+            VoxelData.WorldWidthInVoxels / 2,
+            VoxelData.WorldHeightInVoxels + 5,
+            VoxelData.WorldWidthInVoxels / 2
+        );
 
         GenerateWorld();
         Debug.Log("world gened");
-
     }
 
     private void Update()
@@ -78,13 +85,11 @@ public class World : MonoBehaviour
 
     void GenerateWorld()
     {
-
         int horizMid = VoxelData.WorldWidthChunks / 2;
         int vertMid = VoxelData.WorldHeightChunks / 2;
 
-
         /* for (int x = horizMid - VoxelData.ViewDistanceInChunks; x < horizMid + VoxelData.ViewDistanceInChunks; x++)
-         { 
+         {
              for (int z = horizMid - VoxelData.ViewDistanceInChunks; z < horizMid + VoxelData.ViewDistanceInChunks; z++) //here too
              {
                  for (int y = VoxelData.WorldHeightChunks - VoxelData.ViewDistanceInChunks; y < VoxelData.WorldHeightChunks; y++)
@@ -100,30 +105,24 @@ public class World : MonoBehaviour
                     CreateNewChunk(x, y, z);
                 }
             }
-
         }
 
-       
-        player.transform.position = spawnPosition + new Vector3(.5f, .5f, .5f);  //account for offset of player
-        player.GetComponent<OnyxBasicPlayerMovement>().realPosiiton = player.transform.position;
+        player.transform.position = spawnPosition + new Vector3(.5f, .5f, .5f); //account for offset of player
+        player.GetComponent<OnyxBasicPlayerMovement>().realPosition = player.transform.position;
     }
 
     IEnumerator CreateChunks()
     {
-
         isCreatingChunks = true;
         Debug.Log("Creating Chunk");
         while (chunksToCreate.Count > 0)
         {
-
-            chunks[chunksToCreate[0].x,chunksToCreate[0].y, chunksToCreate[0].z].Init();
+            chunks[chunksToCreate[0].x, chunksToCreate[0].y, chunksToCreate[0].z].Init();
             chunksToCreate.RemoveAt(0);
             yield return null;
-
         }
 
         isCreatingChunks = false;
-
     }
 
     public byte GetVoxel(Vector3 pos)
@@ -133,19 +132,23 @@ public class World : MonoBehaviour
             return 0;
         }
 
-        if(pos.y > VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
+        if (pos.y > VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
         {
             return 0;
         }
         //TODO: find better noise and improve cutoffs for where ores spawn
-        float noise = Perlin.Noise(pos.x / VoxelData.PosPerlinScaling  + 0.5f, pos.y / VoxelData.PosPerlinScaling + 0.5f, pos.z / VoxelData.PosPerlinScaling + 0.5f);
-        
-        if(noise > VoxelData.oreTreshold)
+        float noise = Perlin.Noise(
+            pos.x / VoxelData.PosPerlinScaling + 0.5f,
+            pos.y / VoxelData.PosPerlinScaling + 0.5f,
+            pos.z / VoxelData.PosPerlinScaling + 0.5f
+        );
+
+        if (noise > VoxelData.oreTreshold)
         {
             //Debug.Log("ore1");
             return 2;
-
-        }else if (noise < -1 * VoxelData.oreTreshold)
+        }
+        else if (noise < -1 * VoxelData.oreTreshold)
         {
             //Debug.Log("ore2");
             return 3;
@@ -154,19 +157,12 @@ public class World : MonoBehaviour
         {
             return 1;
         }
-
-
-
-
-
-
     }
 
     void CreateNewChunk(int x, int y, int z)
     {
         chunks[x, y, z] = new Chunk(new ChunkCoord(x, y, z), this);
-        chunksToCreate.Add(new ChunkCoord(x,y,z));
-        
+        chunksToCreate.Add(new ChunkCoord(x, y, z));
     }
 
     void CreateNewChunk(int x, int z) // for purposes of having code match tutorial better
@@ -176,9 +172,14 @@ public class World : MonoBehaviour
 
     bool IsChunkInWorld(ChunkCoord coord)
     {
-        if (coord.x > 0 && coord.x < VoxelData.WorldWidthChunks - 1 &&
-            coord.y > 0 && coord.y < VoxelData.WorldHeightChunks - 1 &&
-            coord.z > 0 && coord.z < VoxelData.WorldWidthChunks - 1)
+        if (
+            coord.x > 0
+            && coord.x < VoxelData.WorldWidthChunks - 1
+            && coord.y > 0
+            && coord.y < VoxelData.WorldHeightChunks - 1
+            && coord.z > 0
+            && coord.z < VoxelData.WorldWidthChunks - 1
+        )
             return true;
         else
             return false;
@@ -186,27 +187,27 @@ public class World : MonoBehaviour
 
     bool IsVoxelInWorld(Vector3 pos)
     {
-        if (pos.x >= 0 && pos.x < VoxelData.WorldWidthInVoxels &&
-            pos.y >= 0 && pos.y < VoxelData.WorldHeightInVoxels &&
-            pos.z >= 0 && pos.z < VoxelData.WorldWidthInVoxels
-            )
+        if (
+            pos.x >= 0
+            && pos.x < VoxelData.WorldWidthInVoxels
+            && pos.y >= 0
+            && pos.y < VoxelData.WorldHeightInVoxels
+            && pos.z >= 0
+            && pos.z < VoxelData.WorldWidthInVoxels
+        )
             return true;
         else
             return false;
     }
-
 }
 
 [System.Serializable]
 public class BlockType
 {
-
     public string blockName;
     public bool isSolid;
     public bool unimportant;
     public bool transparency_I_think;
-
-
 
     [Header("Texture Values")]
     public int backFaceTexture;
@@ -220,10 +221,8 @@ public class BlockType
 
     public int GetTextureID(int faceIndex)
     {
-
         switch (faceIndex)
         {
-
             case 0:
                 return backFaceTexture;
             case 1:
@@ -239,9 +238,6 @@ public class BlockType
             default:
                 Debug.Log("Error in GetTextureID; invalid face index");
                 return 0;
-
-
         }
-
     }
 }
