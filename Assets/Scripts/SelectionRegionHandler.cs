@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class SelectionRegionHandler : MonoBehaviour
 {
-    Vector3 startPoint;
-    Vector3 endPoint;
+    public float extraSize = 0.1f;
 
-    Vector3 maxPoint;
-    Vector3 minPoint;
+   Vector3 startPoint;
+   Vector3 endPoint;
+   
+   Vector3 maxPoint;
+   Vector3 minPoint;
 
     private void Start()
     {
@@ -24,6 +26,7 @@ public class SelectionRegionHandler : MonoBehaviour
             minPoint = Vector3.Min(startPoint, endPoint);
             maxPoint = Vector3.Max(startPoint, endPoint);
 
+            // wanted to use
             minPoint = Vector3Int.FloorToInt(minPoint);
             maxPoint = Vector3Int.CeilToInt(maxPoint);
 
@@ -44,6 +47,7 @@ public class SelectionRegionHandler : MonoBehaviour
     {
         transform.position = (minPoint + maxPoint) / 2;
         Vector3 size = new Vector3(Mathf.Abs(minPoint.x - maxPoint.x), Mathf.Abs(minPoint.y - maxPoint.y), Mathf.Abs(minPoint.z - maxPoint.z));
+        size += new Vector3(extraSize, extraSize, extraSize);
         transform.localScale = size;
     }
 }
