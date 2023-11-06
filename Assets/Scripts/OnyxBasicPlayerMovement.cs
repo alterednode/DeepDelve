@@ -1,85 +1,120 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
     public World world;
-    public float moveSpeed = 10f;
-    public Vector3 realPosiiton;
+    public float moveSpeed;
+    public Vector3 realPosition;
     public GameObject virtualCamera;
-    public float destinationProx = 1;
+    float destinationProx = 1;
+    public GameObject selectionRegionIndicator;
+    SelectionRegionHandler selectionRegionHandler;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-
+        selectionRegionHandler = selectionRegionIndicator.GetComponent<SelectionRegionHandler>();
     }
+
+
 
     private void Update()
     {
-        Debug.Log(destinationProx + ", " + Vector3.Distance(transform.position, realPosiiton) );
-        
+        HandleSelectionRegionStart();
+
+        HandleMoving();
+
+        FinalizeSelectionRegion();
+
+    }
+
+    void HandleSelectionRegionStart()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            selectionRegionIndicator.SetActive(true);
+            selectionRegionHandler.SetStartPoint(realPosition);
+        }
+
+    }
+
+    void FinalizeSelectionRegion()
+    {
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            selectionRegionHandler.ChekcIfRealPositionMoved(realPosition);
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift)) {
+            selectionRegionIndicator.SetActive(false);
+        }
+    }
+
+
+    void HandleMoving()
+    {
+        Debug.Log(destinationProx + ", " + Vector3.Distance(transform.position, realPosition));
+
 
         if (destinationProx < 1)
         {
             destinationProx += Time.deltaTime * moveSpeed;
             destinationProx = Mathf.Clamp(destinationProx, 0f, 1f);
-            transform.position = Vector3.Lerp(transform.position, realPosiiton, destinationProx);
+            transform.position = Vector3.Lerp(transform.position, realPosition, destinationProx);
         }
-            
+
         if (destinationProx == 1)
         {
             Vector3 direction = GetNearestHorizontalVector3(virtualCamera.transform);
-            DoMovement(direction);
-            if (Vector3.Distance(transform.position, realPosiiton) > 0)
+            GetMovement(direction);
+            if (Vector3.Distance(transform.position, realPosition) > 0)
             {
                 destinationProx = 0f;
             }
         }
-
-
     }
 
-    void DoMovement(Vector3 direction)
+
+    void GetMovement(Vector3 direction)
     {
 
         if (Input.GetKey(KeyCode.W))
         {
-            realPosiiton += direction;
+            realPosition += direction;
 
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            realPosiiton += -direction;
+            realPosition += -direction;
 
         }
 
         if (Input.GetKey(KeyCode.A))
         {
 
-            realPosiiton += Quaternion.Euler(0, -90, 0) * direction;
+            realPosition += Quaternion.Euler(0, -90, 0) * direction;
 
         }
 
         if (Input.GetKey(KeyCode.D))
         {
 
-            realPosiiton += Quaternion.Euler(0, 90, 0) * direction;
+            realPosition += Quaternion.Euler(0, 90, 0) * direction;
 
         }
 
         if (Input.GetKey(KeyCode.LeftControl))
         {
 
-            realPosiiton += -Vector3.up;
+            realPosition += -Vector3.up;
 
         }
         if (Input.GetKey(KeyCode.Space))
         {
-            realPosiiton += Vector3.up;
+            realPosition += Vector3.up;
         }
 
 
@@ -115,4 +150,5 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
             default: return Vector3.zero;
         }
     }
+
 }
