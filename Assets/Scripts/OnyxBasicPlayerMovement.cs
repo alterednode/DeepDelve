@@ -107,7 +107,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
 
-            realPosiiton += -Vector3.up;
+            realPosition += -Vector3.up;
 
         }
         if (Input.GetKey(KeyCode.Space))
