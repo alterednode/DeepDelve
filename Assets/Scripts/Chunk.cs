@@ -4,6 +4,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
+[System.Serializable] //temp to see things in unity inspector
 public class Chunk
 {
 
@@ -133,7 +134,10 @@ public class Chunk
         get { return chunkObject.transform.position; }
     }
 
-
+    public bool HasSameCoord(Chunk otherChunk)
+    {
+        return(coord.CompareCoord(otherChunk.coord));
+    }
     public bool IsVoxelInChunk(int x, int y, int z)
     {
         if (x < 0 || x > VoxelData.ChunkWidth - 1 || y < 0 || y > VoxelData.ChunkHeight - 1 || z < 0 || z > VoxelData.ChunkWidth - 1)
@@ -363,6 +367,15 @@ public class ChunkCoord
     public int y;
     public int z;
 
+    public bool CompareCoord(ChunkCoord coord)
+    {
+        return (coord.x == x && coord.y == y && coord.z == z);
+    }
+
+    public override string ToString()
+    {
+        return $"{x}, {y}, {z}";
+    }
     public ChunkCoord(int _x, int _y, int _z)
     {
         x = _x;

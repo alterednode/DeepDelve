@@ -19,17 +19,19 @@ public class World : MonoBehaviour
     public Material transparentMaterial;
     public BlockType[] blocktypes;
 
+
     Chunk[,,] chunks = new Chunk[
         VoxelData.WorldWidthChunks,
         VoxelData.WorldHeightChunks,
         VoxelData.WorldWidthChunks
     ];
 
+    [SerializeField]
     public List<Chunk> chunksToUpdate = new List<Chunk>();
-    private bool isUpdatingChunks = false;
-
+    public bool isUpdatingChunks = false;
+    [SerializeField]
     public List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
-    private bool isCreatingChunks = false;
+    public bool isCreatingChunks = false;
 
     private void Start()
     {
@@ -39,17 +41,32 @@ public class World : MonoBehaviour
             VoxelData.WorldHeightInVoxels + 5,
             VoxelData.WorldWidthInVoxels / 2
         );
-
         GenerateWorld();
         Debug.Log("world gened");
+        
     }
 
     private void Update()
     {
+
+
         if (regenWorld)
         {
             regenWorld = false;
+
+            Vector3 oldplayerPos = player.transform.position;
             GenerateWorld();
+            player.transform.position = oldplayerPos;
+            for (int x = 0; x < VoxelData.WorldWidthChunks - 1; x++)
+            {
+                for(int y = 0; y < VoxelData.WorldHeightChunks -1; y++)
+                {
+                    for(int z = 0; z <  VoxelData.WorldWidthChunks - 1; z++)
+                    {
+                        chunksToUpdate.Add(chunks[x, y, z]);
+                    }
+                }
+            }
         }
 
 
@@ -79,15 +96,13 @@ public class World : MonoBehaviour
     {
 
         int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
-        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkWidth);
+        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight);
         int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
         return chunks[x, y, z];
 
     }
     void GenerateWorld()
     {
-        int horizMid = VoxelData.WorldWidthChunks / 2;
-        int vertMid = VoxelData.WorldHeightChunks / 2;
 
         for (int x = 0; x < VoxelData.WorldWidthChunks; x++)
         {
@@ -179,10 +194,6 @@ public class World : MonoBehaviour
         chunksToCreate.Add(new ChunkCoord(x, y, z));
     }
 
-    void CreateNewChunk(int x, int z) // for purposes of having code match tutorial better
-    {
-        CreateNewChunk(x, 0, z);
-    }
 
     bool IsChunkInWorld(ChunkCoord coord)
     {

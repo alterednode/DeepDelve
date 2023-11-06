@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
@@ -27,62 +28,106 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         FinalizeSelectionRegion();
 
+        //TODO: this desperately needs to be cleaned up lol
+        // also the checking if chunk already in list does not work :(
+
         if (Input.GetKeyDown(KeyCode.Return))
         {
             byte newVoxel = 4;
-            if (!Input.GetKey(KeyCode.LeftShift))
+            if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
             {
+                Debug.Log("Space - no shift");
                 world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), newVoxel);
-                return;
+
             }
-
-
-            Vector3 minpoint = selectionRegionHandler.getMinPoint();
-            Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
-
-            for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
+            else
             {
 
-                for (int y = (int)minpoint.y; y < (int)maxpoint.y; y++)
+
+                Debug.Log("Space - shift");
+
+
+                Vector3 minpoint = selectionRegionHandler.getMinPoint();
+                Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
+
+                for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
                 {
-                    for (int z = (int)minpoint.x; z < (int)maxpoint.z; z++)
+                    for (int y = (int)minpoint.y; y < (int)maxpoint.y; y++)
                     {
-                        Vector3 blockLocation = new Vector3(x, y, z);
-                        if (!world.IsVoxelInWorld(blockLocation))
-                        { // dont even bother with voxels out of the world.
-                            return;
-                        }
-
-                        Chunk curChunk = world.GetChunkFromVector3(blockLocation);
-                        curChunk.DirectlySetVoxel(blockLocation, newVoxel);
-                        if (!world.chunksToUpdate.Contains(curChunk))
+                        for (int z = (int)minpoint.z; z < (int)maxpoint.z; z++)
                         {
-                            world.chunksToUpdate.Add(curChunk);
-                            Debug.Log("added chunk to list");
-                        }
+                            Vector3 blockLocation = new Vector3(x, y, z);
+                            if (!world.IsVoxelInWorld(blockLocation))
+                            { // dont even bother with voxels out of the world.
+                                Debug.Log("out of world");
+                                return;
+                            }
 
-                        for (int i = 0; i < 6; i++)
-                        {
-                            if (!curChunk.IsVoxelInChunk(blockLocation + VoxelData.faceCheckVectors[i]))
+                            Chunk curChunk = world.GetChunkFromVector3(blockLocation);
+                            curChunk.DirectlySetVoxel(blockLocation, newVoxel);
+
+                            bool chunkInListAlready = false;
+
+                            for (int i = 0; i < world.chunksToUpdate.Count; i++)
                             {
-                                if (world.IsVoxelInWorld(blockLocation + VoxelData.faceCheckVectors[i]))
+                                Debug.Log("For loop even works");
+                                Debug.Log("For Loop stuff: " + world.chunksToUpdate[i].coord.ToString() + ", " + curChunk.coord.ToString());
+                                if (world.chunksToUpdate[i].HasSameCoord(curChunk))
                                 {
-                                 Chunk adjChunk =   world.GetChunkFromVector3(blockLocation + VoxelData.faceCheckVectors[i]);
-
-                                    if (!world.chunksToUpdate.Contains(adjChunk))
-                                    {
-                                        world.chunksToUpdate.Add(adjChunk);
-
-                                        Debug.Log("added adjacent chunk to list");
-                                       }
+                                    Debug.Log("chunk in array already");
+                                    chunkInListAlready = true;
                                 }
-                        }
+                            }
+
+                            if (!chunkInListAlready)
+                            {
+                                world.chunksToUpdate.Add(curChunk);
+                            }
+
+
+                            for (int i = 0; i < 6; i++)
+                            {
+                                if (!curChunk.IsVoxelInChunk(blockLocation + VoxelData.faceCheckVectors[i]))
+                                {
+                                    if (world.IsVoxelInWorld(blockLocation + VoxelData.faceCheckVectors[i]))
+                                    {
+                                        Chunk adjChunk = world.GetChunkFromVector3(blockLocation + VoxelData.faceCheckVectors[i]);
+
+                                        chunkInListAlready = false;
+
+                                        for (int j = 0; j < world.chunksToUpdate.Count; j++)
+                                        {
+                                            if (world.chunksToUpdate[j].HasSameCoord(adjChunk))
+                                            {
+                                                Debug.Log("adjacent chunk in list already");
+                                                chunkInListAlready = true;
+                                            }
+                                        }
+
+                                        if (!chunkInListAlready)
+                                        {
+                                            world.chunksToUpdate.Add(adjChunk);
+                                        }
+
+
+
+
+
+
+                                        {
+                                            world.chunksToUpdate.Add(adjChunk);
+
+                                            Debug.Log("added adjacent chunk to list");
+                                        }
+                                    }
+                                }
+
+                            }
+
 
                         }
-
 
                     }
-
                 }
             }
         }
