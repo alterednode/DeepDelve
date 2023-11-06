@@ -40,8 +40,14 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
             }
             else
             {
+                // a bunch of this should probabyl be moved into funtions in SelectionRegionHandler idk lol
+
+                // get the smalles x,y,z and largest x,y,z to be corners
                 Vector3 minpoint = selectionRegionHandler.getMinPoint();
                 Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
+
+
+                // for each voxel contained within the min and max point set it to the new blockID (newVoxel)
 
                 for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
                 {
@@ -49,7 +55,10 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                     {
                         for (int z = (int)minpoint.z; z < (int)maxpoint.z; z++)
                         {
+
                             Vector3 blockLocation = new Vector3(x, y, z);
+
+
                             if (!world.IsVoxelInWorld(blockLocation))
                             { // dont even bother with voxels out of the world.
                                 return;
@@ -60,6 +69,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                             bool chunkInListAlready = false;
 
+                            //I dont know why I had to do it this way, maybe change to list.contains at some point
+                            // anyways it makes sure we dont update a chunk twice
                             for (int i = 0; i < world.chunksToUpdate.Count; i++)
                             {
                                 if (world.chunksToUpdate[i].HasSameCoord(curChunk))
@@ -69,18 +80,25 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                                 }
                             }
 
+                            // adds the chunk that the voxel is in to a list of chunks that gets automatically (visually) updated
                             if (!chunkInListAlready)
                             {
                                 world.chunksToUpdate.Add(curChunk);
                             }
+
+                            // for each of the six voxels on the faces of the altered voxel, check if they are in a different chunk as the altered voxel
                             for (int i = 0; i < 6; i++)
                             {
                                 if (!curChunk.IsVoxelInChunk(blockLocation + VoxelData.faceCheckVectors[i]))
                                 {
+                                    // if they are, double check that that voxel is in the world
                                     if (world.IsVoxelInWorld(blockLocation + VoxelData.faceCheckVectors[i]))
                                     {
+                                        // get the adjacent chunk
                                         Chunk adjChunk = world.GetChunkFromVector3(blockLocation + VoxelData.faceCheckVectors[i]);
 
+
+                                        // use the same method as before for checking if the chunk is already queued to be updated, if not add it.
                                         chunkInListAlready = false;
 
                                         for (int j = 0; j < world.chunksToUpdate.Count; j++)
