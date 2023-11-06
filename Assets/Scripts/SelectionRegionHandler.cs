@@ -32,7 +32,7 @@ public class SelectionRegionHandler : MonoBehaviour
         
     }
 
-    public void ChekcIfRealPositionMoved(Vector3 realPosition)
+    public void CheckIfRealPositionMoved(Vector3 realPosition)
     {
         if (!endPoint.Equals(realPosition))
         {
@@ -47,7 +47,7 @@ public class SelectionRegionHandler : MonoBehaviour
 
     public void SetStartPoint(Vector3 _startPoint)
     {
-        endPoint = -_startPoint;
+        endPoint = -_startPoint; // ensure that somehow endPoint isnt in an annoying spot at when CheckIfRealPositionMoved run
         startPoint = _startPoint;
     }
 

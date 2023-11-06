@@ -44,7 +44,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            selectionRegionHandler.ChekcIfRealPositionMoved(realPosition);
+            selectionRegionHandler.CheckIfRealPositionMoved(realPosition);
         }
         if(Input.GetKeyUp(KeyCode.LeftShift)) {
             selectionRegionIndicator.SetActive(false);
