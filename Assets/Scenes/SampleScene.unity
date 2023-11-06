@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.14339349, g: 0.15341045, b: 0.22602735, a: 1}
+  m_IndirectSpecularColor: {r: 0.14348724, g: 0.15348794, b: 0.22610618, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -681,8 +681,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   world: {fileID: 0}
-  moveSpeed: 1
-  realPosiiton: {x: 0, y: 0, z: 0}
+  moveSpeed: 3
+  realPosition: {x: 0, y: 0, z: 0}
   virtualCamera: {fileID: 1391323509}
   destinationProx: 1
 --- !u!1 &1095206762
