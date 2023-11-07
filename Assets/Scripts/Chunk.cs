@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 
 [System.Serializable] //temp to see things in unity inspector
 public class Chunk

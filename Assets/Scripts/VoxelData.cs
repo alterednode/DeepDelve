@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class VoxelData
@@ -9,7 +7,7 @@ public static class VoxelData
 
     // amount of chunks to load at first
     public static readonly int startAreaWidth = 4;
-    public static readonly int startAreaHeight = 4;
+    public static readonly int startAreaHeight = 20;
 
     public static readonly int ChunkWidth = 16; // Width of chunk in blocks
     public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks

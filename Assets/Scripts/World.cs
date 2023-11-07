@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class World : MonoBehaviour
 {
@@ -43,7 +40,7 @@ public class World : MonoBehaviour
         );
         GenerateWorld();
         Debug.Log("world gened");
-        
+
     }
 
     private void Update()
@@ -59,9 +56,9 @@ public class World : MonoBehaviour
             player.transform.position = oldplayerPos;
             for (int x = 0; x < VoxelData.WorldWidthChunks - 1; x++)
             {
-                for(int y = 0; y < VoxelData.WorldHeightChunks -1; y++)
+                for (int y = 0; y < VoxelData.WorldHeightChunks - 1; y++)
                 {
-                    for(int z = 0; z <  VoxelData.WorldWidthChunks - 1; z++)
+                    for (int z = 0; z < VoxelData.WorldWidthChunks - 1; z++)
                     {
                         chunksToUpdate.Add(chunks[x, y, z]);
                     }
@@ -111,13 +108,15 @@ public class World : MonoBehaviour
         int horizMidPoint = VoxelData.WorldWidthChunks / 2;
 
 
-        for (int x = horizMidPoint - VoxelData.startAreaWidth; x < horizMidPoint + VoxelData.startAreaWidth; x++)
+        for (int y = VoxelData.WorldHeightChunks - 1; y >= VoxelData.WorldHeightChunks - VoxelData.startAreaHeight * 2; y--)
         {
-            for (int z = horizMidPoint - VoxelData.startAreaWidth; z < horizMidPoint + VoxelData.startAreaWidth; z++)
+            for (int x = horizMidPoint - VoxelData.startAreaWidth; x < horizMidPoint + VoxelData.startAreaWidth; x++)
             {
-                for (int y = VoxelData.WorldHeightChunks -  VoxelData.startAreaHeight * 2 ; y < VoxelData.WorldHeightChunks; y++)
+                for (int z = horizMidPoint - VoxelData.startAreaWidth; z < horizMidPoint + VoxelData.startAreaWidth; z++)
                 {
+
                     CreateNewChunk(x, y, z);
+
                 }
             }
         }
@@ -143,7 +142,7 @@ public class World : MonoBehaviour
 
         isCreatingChunks = false;
     }
-    
+
     /// <summary>
     /// Updates the mesh of a chunk
     /// </summary>
@@ -224,8 +223,8 @@ public class World : MonoBehaviour
         }
 
         Chunk curChunk = GetChunkFromVector3(pos);
-       // if (IsVoxelInLoadedChunk(pos))
-       if(curChunk.isVoxelMapPopulated)
+        // if (IsVoxelInLoadedChunk(pos))
+        if (curChunk.isVoxelMapPopulated)
             return curChunk.GetVoxel(pos);
         else
             return GenerateVoxel(pos);
@@ -284,7 +283,7 @@ public class World : MonoBehaviour
     {
         if (IsVoxelInWorld(pos))
         {
-           return GetChunkFromVector3(pos).isVoxelMapPopulated;
+            return GetChunkFromVector3(pos).isVoxelMapPopulated;
         }
         else
         {

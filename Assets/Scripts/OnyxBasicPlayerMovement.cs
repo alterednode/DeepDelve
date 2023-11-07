@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using System;
 using Cinemachine;
-using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class OnyxBasicPlayerMovement : MonoBehaviour
 {
@@ -72,17 +66,18 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         //TODO: this desperately needs to be cleaned up lol
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)) // dont know if keeping mouse button placement forever
+        if (Input.GetKey(KeyCode.Return) || Input.GetMouseButton(0)) // dont know if keeping mouse button placement forever
         {
 
             if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
             {
-                //place single block because SelecitonRegion not active (shift not held)
+                //place single block because SelecitonRegion not active (shift not 
                 world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), selectedBlockID);
 
             }
             else
             {
+
                 // a bunch of this should probabyl be moved into funtions in SelectionRegionHandler idk lol
 
                 // get the smalles x,y,z and largest x,y,z to be corners
