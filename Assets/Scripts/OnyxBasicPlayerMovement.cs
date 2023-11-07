@@ -20,6 +20,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
 
     float destinationProx = 1;
+    public float destinationProxResetValue = 0.7f;
     public GameObject selectionRegionIndicator;
     SelectionRegionHandler selectionRegionHandler;
 
@@ -250,7 +251,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
             GetMovement(direction);
             if (Vector3.Distance(transform.position, realPosition) > 0)
             {
-                destinationProx = 0f;
+                destinationProx = destinationProxResetValue;
             }
         }
     }
