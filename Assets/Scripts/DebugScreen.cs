@@ -28,17 +28,17 @@ public class DebugScreen : MonoBehaviour
     void Update()
     {
 
-        string debugText = "The Deep Delve";
+        string debugText = "The Deep Delve \nDebug Screen";
         debugText += "\n";
         debugText += frameRate + " fps";
         debugText += "\n";
-        debugText += "Soft XYZ: X: " + world.player.transform.position.x + "Y: " + world.player.transform.position.y + "Z: " + world.player.transform.position.z;
+        debugText += "Soft XYZ: \nX: " + world.player.transform.position.x + "Y: " + world.player.transform.position.y + "Z: " + world.player.transform.position.z;
         debugText += "\n";
-        debugText += "Hard XYZ: X: " + playerScript.realPosition.x + "Y: " + playerScript.realPosition.y + "Z: " + playerScript.realPosition.z;
+        debugText += "Hard XYZ: \nX: " + playerScript.realPosition.x + "Y: " + playerScript.realPosition.y + "Z: " + playerScript.realPosition.z;
         debugText += "\n";
         debugText += "Chunk: " + world.GetChunkCoordFromVector3(playerScript.realPosition).ToString();
         debugText += "\n";
-        debugText += "Selected Block: ID: " + playerScript.selectedBlockID + " Name: " + world.blocktypes[playerScript.selectedBlockID].blockName;
+        debugText += "Selected Block: \nID: " + playerScript.selectedBlockID + " \nName: " + world.blocktypes[playerScript.selectedBlockID].blockName;
         debugText += "\n";
         debugText += "/\\ Change with numkeys";
 
