@@ -152,7 +152,7 @@ public class World : MonoBehaviour
         isUpdatingChunks = true;
         while (chunksToUpdate.Count > 0)
         {
-            Debug.Log("Updating chunk");
+            Debug.Log("Updating chunk" + chunksToUpdate[0].coord.ToString());
             chunksToUpdate[0].UpdateChunk();
             chunksToUpdate.RemoveAt(0);
             yield return null;
@@ -283,7 +283,8 @@ public class World : MonoBehaviour
     {
         if (IsVoxelInWorld(pos))
         {
-            return GetChunkFromVector3(pos).isVoxelMapPopulated;
+            ChunkCoord coordinate = GetChunkCoordFromVector3((Vector3)pos);
+            return !(chunks[coordinate.x, coordinate.y, coordinate.z] == null);
         }
         else
         {
