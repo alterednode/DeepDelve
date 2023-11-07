@@ -45,6 +45,10 @@ public class DebugScreen : MonoBehaviour
             debugText += "\n";
             debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world.blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
         }
+        else
+        {
+            debugText += "Player not in world\n\n";
+        }
         debugText += "\n";
         if (world.isCreatingChunks)
         {
