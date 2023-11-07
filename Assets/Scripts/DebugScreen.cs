@@ -9,6 +9,7 @@ public class DebugScreen : MonoBehaviour
     float frameRate;
     float timer;
     OnyxBasicPlayerMovement playerScript;
+    Resolution currentResolution;
     
 
 
@@ -28,6 +29,8 @@ public class DebugScreen : MonoBehaviour
         string debugText = "The Deep Delve \nDebug Screen";
         debugText += "\n";
         debugText += frameRate + " fps";
+        debugText += "\n";
+        debugText += "Resolution: " + Screen.width + "x" + Screen.height;
         debugText += "\n";
         debugText += "Soft XYZ: \nX: " + world.player.transform.position.x + "Y: " + world.player.transform.position.y + "Z: " + world.player.transform.position.z;
         debugText += "\n";
