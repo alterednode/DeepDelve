@@ -66,7 +66,22 @@ public class World : MonoBehaviour
             }
         }
 
-
+        //temporary thing
+        if(!IsVoxelInLoadedChunk(player.transform.position) && IsVoxelInWorld(player.transform.position))
+        {
+            ChunkCoord newChunkLocation = GetChunkCoordFromVector3(player.transform.position);
+            CreateNewChunk(newChunkLocation.x, newChunkLocation.y, newChunkLocation.z);
+            for(int i = 0; i < 6; i++)
+            {
+                //need to update mesh of adjacent chunks
+                Vector3 newChunkVoxelCoordinates = player.transform.position + VoxelData.faceCheckVectors[i] * VoxelData.ChunkWidth;
+                if(IsVoxelInLoadedChunk(newChunkVoxelCoordinates) && IsVoxelInWorld(newChunkVoxelCoordinates))
+                {
+                    Vector3 updateChunkCoordinates = newChunkLocation.ToVector3() + VoxelData.faceCheckVectors[i];
+                    chunksToUpdate.Add(chunks[(int)updateChunkCoordinates.x, (int)updateChunkCoordinates.y, (int)updateChunkCoordinates.z]);
+                }
+            }
+        }
 
 
         if (chunksToUpdate.Count > 0 && !isUpdatingChunks)
@@ -187,7 +202,7 @@ public class World : MonoBehaviour
         }
 
 
-        if (pos.y > VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
+        if (pos.y >= VoxelData.WorldHeightInVoxels - VoxelData.ChunkHeight)
         {
             return 0;
         }
