@@ -172,7 +172,7 @@ public class World : MonoBehaviour
     /// byte BlockID
     /// </returns>
 
-    //maybe change to choose / generate voxel
+    //maybe change to choose / generate voxel and add a getVoxel func that will get a voxel from a chunk at a position
     public byte GetVoxel(Vector3 pos)
     {
 

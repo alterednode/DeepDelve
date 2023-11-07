@@ -13,7 +13,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
     public World world;
     public float moveSpeed;
     public Vector3 realPosition;
-
+    public byte selectedBlockID = 4;
 
     public float cameraMoveSpeed = 300;
     public float zoomSpeed = 70;
@@ -53,6 +53,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        AAAASOMEONEPRESSEDANUMBERKEY();
+
         HandleCamera();
 
         HandleSelectionRegionStart();
@@ -63,12 +65,12 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         //TODO: this desperately needs to be cleaned up lol
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)) // dont know if keeping mouse button placement forever
         {
-            byte newVoxel = 4;
+            
             if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
             {
-                world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), newVoxel);
+                world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), selectedBlockID);
 
             }
             else
@@ -80,7 +82,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                 Vector3 maxpoint = selectionRegionHandler.getMaxPoint();
 
 
-                // for each voxel contained within the min and max point set it to the new blockID (newVoxel)
+                // for each voxel contained within the min and max point set it to the new blockID (selectedBlockID)
 
                 for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
                 {
@@ -98,7 +100,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                             }
 
                             Chunk curChunk = world.GetChunkFromVector3(blockLocation);
-                            curChunk.DirectlySetVoxel(blockLocation, newVoxel);
+                            curChunk.DirectlySetVoxel(blockLocation, selectedBlockID);
 
                             bool chunkInListAlready = false;
 
@@ -160,6 +162,34 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
             }
         }
 
+    }
+
+    private void AAAASOMEONEPRESSEDANUMBERKEY()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            selectedBlockID = 0;
+        }else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedBlockID = 4;
+        }else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedBlockID = 1;
+        }else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            selectedBlockID = 2;
+        }else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            selectedBlockID = 3;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            selectedBlockID = 4;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            selectedBlockID = 5;
+        }
     }
 
     private void HandleCamera()
