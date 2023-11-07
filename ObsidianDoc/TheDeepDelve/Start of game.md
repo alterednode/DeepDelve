@@ -1,3 +1,10 @@
+---
+tags:
+  - player
+  - progression
+---
+
+
 **Starting the Game**
 start as on boring looking plane, with crashed thing (cliche i know)
 

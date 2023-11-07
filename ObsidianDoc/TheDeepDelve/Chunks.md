@@ -1,3 +1,11 @@
+---
+tags:
+  - chunk
+  - mesh
+aliases:
+  - Chunk
+---
+
 Contain [[Blocks]]
 Store source blocks of building
 Chunks contain 

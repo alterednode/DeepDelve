@@ -1,3 +1,7 @@
+---
+tags:
+  - world
+---
 
 Contains a (x,y,z) N$_x$ \* N$_y$ \* N$_x$ array of [[Chunks]] 
 

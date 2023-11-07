@@ -1,2 +1,6 @@
+---
+tags:
+  - player
+  - progression
+---
 
-[[BlockReplacement]]
