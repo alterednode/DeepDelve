@@ -17,6 +17,11 @@ public class ChunkCoord
     {
         return $"{x}, {y}, {z}";
     }
+
+    public Vector3 ToVector3()
+    {
+        return new Vector3(x, y, z);
+    }
     public ChunkCoord(int _x, int _y, int _z)
     {
         x = _x;
