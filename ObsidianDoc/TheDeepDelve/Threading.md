@@ -4,7 +4,7 @@ tags:
   - optimization
 ---
 
-on start, determine how many threads user can reasonably support
+on start, determine how many threads user can reasonably support. Can likely safely assume at least 4, since no dual-thread cpus will run the game well.
 
 queue of things to start on thread
 when thread is doing something, lock it.
@@ -14,7 +14,7 @@ start queued thing on thread.
 
 change the way we change voxels?
 
-things that should be done on a thread
+things that **SHOULD** be done on a thread
 - generating voxel shit with noise
 - generating mesh stuff
 - calculating machine efficency - test this code in a non thread
