@@ -24,7 +24,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
     public GameObject selectionRegionIndicator;
     SelectionRegionHandler selectionRegionHandler;
 
-    Vector3[] compassVectors = new Vector3[]
+    readonly Vector3[] compassVectors = new Vector3[]
         {
         Vector3.forward,
         -Vector3.right,
