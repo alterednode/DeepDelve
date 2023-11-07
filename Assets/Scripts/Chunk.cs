@@ -70,7 +70,7 @@ public class Chunk
             {
                 for (int y = 0; y < VoxelData.ChunkHeight; y++)
                 {
-                    voxelMap[x, y, z] = world.GetVoxel(new Vector3(x, y, z) + position);
+                    voxelMap[x, y, z] = world.GenerateVoxel(new Vector3(x, y, z) + position);
                 }
             }
         }
@@ -184,6 +184,19 @@ public class Chunk
         zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
 
         voxelMap[xCheck, yCheck, zCheck] = newID;
+    }
+
+    public byte GetVoxel(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        yCheck -= Mathf.FloorToInt(chunkObject.transform.position.y);
+        zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        return voxelMap[xCheck, yCheck, zCheck];
     }
 
     void UpdateSurroundingVoxels(int x, int y, int z)

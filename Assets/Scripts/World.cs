@@ -173,7 +173,7 @@ public class World : MonoBehaviour
     /// </returns>
 
     //maybe change to choose / generate voxel and add a getVoxel func that will get a voxel from a chunk at a position
-    public byte GetVoxel(Vector3 pos)
+    public byte GenerateVoxel(Vector3 pos)
     {
 
         if (!IsVoxelInWorld(pos))
@@ -214,6 +214,13 @@ public class World : MonoBehaviour
             return 1;
         }
     }
+
+    public byte GetVoxel(Vector3 pos)
+    {
+        Chunk curChunk = GetChunkFromVector3(pos);
+        return curChunk.GetVoxel(pos);
+    }
+
 
     /// <summary>
     ///  Adds a new chunk to the world, and adds it to the creation queue
