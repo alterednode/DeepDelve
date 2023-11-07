@@ -217,8 +217,18 @@ public class World : MonoBehaviour
 
     public byte GetVoxel(Vector3 pos)
     {
+        ChunkCoord chunkLocation = GetChunkCoordFromVector3(pos);
+        if (chunks[chunkLocation.x, chunkLocation.y, chunkLocation.z] == null)
+        {
+            return 0;
+        }
+
         Chunk curChunk = GetChunkFromVector3(pos);
-        return curChunk.GetVoxel(pos);
+       // if (IsVoxelInLoadedChunk(pos))
+       if(curChunk.isVoxelMapPopulated)
+            return curChunk.GetVoxel(pos);
+        else
+            return GenerateVoxel(pos);
     }
 
 
@@ -268,6 +278,18 @@ public class World : MonoBehaviour
             return true;
         else
             return false;
+    }
+
+    public bool IsVoxelInLoadedChunk(Vector3 pos)
+    {
+        if (IsVoxelInWorld(pos))
+        {
+           return GetChunkFromVector3(pos).isVoxelMapPopulated;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 

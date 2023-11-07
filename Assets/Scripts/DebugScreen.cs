@@ -42,10 +42,12 @@ public class DebugScreen : MonoBehaviour
         debugText += "\n";
         debugText += "/\\ Change with numkeys";
         debugText += "\n";
-        debugText += "Player Inside Block:";
-        debugText += "\n";
-        debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world.blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
-
+        if (world.IsVoxelInWorld(playerScript.realPosition))
+        {
+            debugText += "Player Inside Block:";
+            debugText += "\n";
+            debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world.blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
+        }
 
 
         text.text = debugText;

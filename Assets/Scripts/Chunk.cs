@@ -29,8 +29,6 @@ public class Chunk
 
     World world;
 
-
-    private bool _isActive;
     public bool isVoxelMapPopulated = false;
     public Chunk(ChunkCoord _coord, World _world)
     {
@@ -62,7 +60,7 @@ public class Chunk
 
     void PopulateVoxelMap()
     {
-
+        isVoxelMapPopulated = true;
 
         for (int x = 0; x < VoxelData.ChunkWidth; x++)
         {

@@ -63,13 +63,21 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
         FinalizeSelectionRegion();
 
+        DoVoxelPlacement();
+
+    }
+
+    private void DoVoxelPlacement()
+    {
+
         //TODO: this desperately needs to be cleaned up lol
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)) // dont know if keeping mouse button placement forever
         {
-            
+
             if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
             {
+                //place single block because SelecitonRegion not active (shift not held)
                 world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), selectedBlockID);
 
             }
@@ -161,7 +169,6 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                 }
             }
         }
-
     }
 
     private void AAAASOMEONEPRESSEDANUMBERKEY()
