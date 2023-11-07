@@ -32,7 +32,7 @@ public class DebugScreen : MonoBehaviour
         debugText += "\n";
         debugText += "Resolution: " + Screen.width + "x" + Screen.height;
         debugText += "\n";
-        debugText += "Soft XYZ: \nX: " + world.player.transform.position.x + "Y: " + world.player.transform.position.y + "Z: " + world.player.transform.position.z;
+        debugText += "Soft XYZ: \nX: " + world.player.transform.position.x.ToString("n2") + "Y: " + world.player.transform.position.y.ToString("n2") + "Z: " + world.player.transform.position.z.ToString("n2");
         debugText += "\n";
         debugText += "Hard XYZ: \nX: " + playerScript.realPosition.x + "Y: " + playerScript.realPosition.y + "Z: " + playerScript.realPosition.z;
         debugText += "\n";
