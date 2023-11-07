@@ -45,6 +45,24 @@ public class DebugScreen : MonoBehaviour
             debugText += "\n";
             debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world.blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
         }
+        debugText += "\n";
+        if (world.isCreatingChunks)
+        {
+            debugText += "Actively Creating Chunks";
+        }
+        else
+        {
+            debugText += "Not creating any chunks";
+        }
+        debugText += "\n";
+        if (world.isUpdatingChunks)
+        {
+            debugText += "Actively Updating Chunks";
+        }
+        else
+        {
+            debugText += "Not Updating any chunks";
+        }
 
 
         text.text = debugText;
