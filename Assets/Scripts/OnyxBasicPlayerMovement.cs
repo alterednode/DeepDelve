@@ -219,7 +219,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         }
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            Debug.Log("decreacing distance");
+            Debug.Log("decreasing distance");
             cinemachineFramingTransposer.m_CameraDistance -= cinemachineFramingTransposer.m_CameraDistance * Time.deltaTime * zoomSpeed;
             cinemachineFramingTransposer.m_CameraDistance = Mathf.Clamp(cinemachineFramingTransposer.m_CameraDistance, minZoom, maxZoom);
         }
