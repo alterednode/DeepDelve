@@ -7,7 +7,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
     public World world;
     public float moveSpeed;
     public Vector3 realPosition;
-    public byte selectedBlockID = 4;
+    public byte selectedBlockID = 0;
 
     public float cameraMoveSpeed = 300;
     public float zoomSpeed = 70;
@@ -70,7 +70,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Return) || Input.GetMouseButton(0)) // dont know if keeping mouse button placement forever
         {
 
-            if (!Input.GetKey(KeyCode.LeftShift) && world.IsVoxelInWorld(realPosition))
+            if (!Input.GetKey(KeyCode.LeftShift) && world.IsPosInWorld(realPosition))
             {
                 //place single block because SelecitonRegion not active (shift not 
                 world.GetChunkFromVector3(Vector3Int.FloorToInt(realPosition)).EditVoxel(Vector3Int.FloorToInt(realPosition), selectedBlockID);
@@ -87,7 +87,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
 
                 // for each voxel contained within the min and max point set it to the new blockID (selectedBlockID)
-
+                //REWRITE: redo this
+                /*
                 for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
                 {
                     for (int y = (int)minpoint.y; y < (int)maxpoint.y; y++)
@@ -98,7 +99,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                             Vector3 blockLocation = new Vector3(x, y, z);
 
 
-                            if (!world.IsVoxelInWorld(blockLocation))
+                            if (!world.IsPosInWorld(blockLocation))
                             { // dont even bother with voxels out of the world.
                                 return;
                             }
@@ -113,7 +114,13 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                     }
                 }
+                */
 
+
+                /*
+                 * This needs to be redone
+                 //REWRITE: redo this
+                 * 
                 minpoint -= Vector3.one;
                 maxpoint += Vector3.one + new Vector3(VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth);
 
@@ -135,6 +142,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                     }
                 }
+                */
             }
         }
     }

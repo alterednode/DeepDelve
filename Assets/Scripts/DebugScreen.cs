@@ -8,8 +8,9 @@ public class DebugScreen : MonoBehaviour
     public World world;
     float frameRate;
     float timer;
-    OnyxBasicPlayerMovement playerScript;
-    Resolution currentResolution;
+    public GameObject player;
+    public OnyxBasicPlayerMovement playerScript;
+    GameManager gameManager;
     
 
 
@@ -18,35 +19,44 @@ public class DebugScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         text = gameObject.GetComponent<TMP_Text>();
-        playerScript = world.player.GetComponent<OnyxBasicPlayerMovement>();
+    }
+
+    public void SetPlayerAndWorld(GameObject newPlayer, World newWorld)
+    {
+        player = newPlayer;
+        playerScript = player.GetComponent<OnyxBasicPlayerMovement>();
+
+        world = newWorld;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         string debugText = "The Deep Delve \nDebug Screen";
         debugText += "\n";
         debugText += frameRate + " fps";
         debugText += "\n";
         debugText += "Resolution: " + Screen.width + "x" + Screen.height;
         debugText += "\n";
-        debugText += "Soft XYZ: \nX: " + world.player.transform.position.x.ToString("n2") + "Y: " + world.player.transform.position.y.ToString("n2") + "Z: " + world.player.transform.position.z.ToString("n2");
+        debugText += "Soft XYZ: \nX: " + player.transform.position.x.ToString("n2") + "Y: " + player.transform.position.y.ToString("n2") + "Z: " + player.transform.position.z.ToString("n2");
         debugText += "\n";
         debugText += "Hard XYZ: \nX: " + playerScript.realPosition.x + "Y: " + playerScript.realPosition.y + "Z: " + playerScript.realPosition.z;
         debugText += "\n";
         debugText += "Chunk: " + world.GetChunkCoordFromVector3(playerScript.realPosition).ToString();
         debugText += "\n";
-        debugText += "Selected Block: \nID: " + playerScript.selectedBlockID + " \nName: " + world.blocktypes[playerScript.selectedBlockID].blockName;
+        debugText += "BigChunk: " + world.GetBigChunkCoordFromVector3(playerScript.realPosition).ToString();
+        debugText += "\n";
+        debugText += "Selected Block: \nID: " + playerScript.selectedBlockID + " \nName: " + world._blocktypes[playerScript.selectedBlockID].blockName;
         debugText += "\n";
         debugText += "/\\ Change with numkeys";
         debugText += "\n";
-        if (world.IsVoxelInWorld(playerScript.realPosition))
+        if (world.IsPosInWorld(playerScript.realPosition))
         {
             debugText += "Player Inside Block:";
             debugText += "\n";
-            debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world.blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
+            debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world._blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
         }
         else
         {

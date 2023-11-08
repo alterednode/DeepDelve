@@ -4,7 +4,8 @@ using UnityEngine;
 [System.Serializable] //temp to see things in unity inspector
 public class Chunk
 {
-
+    World world;
+    BigChunk bigChunk;
     //coordinates of the chunk IN CHUNKS
     public ChunkCoord coord;
 
@@ -22,17 +23,17 @@ public class Chunk
     Material[] materials = new Material[2];
     List<Vector2> uvs = new List<Vector2>();
 
-    byte[,,] voxelMap = new byte[VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth];
+    byte[,,] voxelMap;
 
-    World world;
 
     public bool isVoxelMapPopulated = false;
-    public Chunk(ChunkCoord _coord, World _world)
+    public Chunk(ChunkCoord coord, World world, BigChunk bigChunk)
     {
-        coord = _coord;
-        world = _world;
-
-    }
+        this.coord = coord;
+        this.world = world;
+        this.bigChunk = bigChunk;
+        voxelMap = new byte[world._chunkSize, world._chunkSize, world._chunkSize];
+    }   
 
     public void Init()
     {
@@ -45,8 +46,8 @@ public class Chunk
         materials[1] = world.transparentMaterial;
         meshRenderer.materials = materials;
 
-        chunkObject.transform.SetParent(world.transform);
-        chunkObject.transform.position = new Vector3(coord.x * VoxelData.ChunkWidth, coord.y * VoxelData.ChunkHeight, coord.z * VoxelData.ChunkWidth);
+        chunkObject.transform.SetParent(bigChunk.bigChunkObject.transform);
+        chunkObject.transform.position = new Vector3(coord.x * world._chunkSize, coord.y * world._chunkSize, coord.z * world._chunkSize);
         chunkObject.name = "Chunk " + coord.x + ", " + coord.y + ", " + coord.z;
 
 
@@ -58,11 +59,11 @@ public class Chunk
     {
         isVoxelMapPopulated = true;
 
-        for (int x = 0; x < VoxelData.ChunkWidth; x++)
+        for (int x = 0; x < world._chunkSize; x++)
         {
-            for (int z = 0; z < VoxelData.ChunkWidth; z++)
+            for (int z = 0; z < world._chunkSize; z++)
             {
-                for (int y = 0; y < VoxelData.ChunkHeight; y++)
+                for (int y = 0; y < world._chunkSize; y++)
                 {
                     voxelMap[x, y, z] = world.GenerateVoxel(new Vector3(x, y, z) + position);
                 }
@@ -76,14 +77,14 @@ public class Chunk
 
         ClearMeshData();
 
-        for (int y = 0; y < VoxelData.ChunkHeight; y++)
+        for (int y = 0; y < world._chunkSize; y++)
         {
-            for (int x = 0; x < VoxelData.ChunkWidth; x++)
+            for (int x = 0; x < world._chunkSize; x++)
             {
-                for (int z = 0; z < VoxelData.ChunkWidth; z++)
+                for (int z = 0; z < world._chunkSize; z++)
                 {
 
-                    if (world.blocktypes[voxelMap[x, y, z]].isSolid)
+                    if (world._blocktypes[voxelMap[x, y, z]].isSolid)
                         UpdateMeshData(new Vector3(x, y, z));
 
                 }
@@ -111,11 +112,11 @@ public class Chunk
     void CreateMeshData()
     {
 
-        for (int y = 0; y < VoxelData.ChunkHeight; y++)
+        for (int y = 0; y < world._chunkSize; y++)
         {
-            for (int x = 0; x < VoxelData.ChunkWidth; x++)
+            for (int x = 0; x < world._chunkSize; x++)
             {
-                for (int z = 0; z < VoxelData.ChunkWidth; z++)
+                for (int z = 0; z < world._chunkSize; z++)
                 {
 
                     UpdateMeshData(new Vector3(x, y, z));
@@ -133,7 +134,7 @@ public class Chunk
 
     public bool IsVoxelInChunk(int x, int y, int z)
     {
-        if (x < 0 || x > VoxelData.ChunkWidth - 1 || y < 0 || y > VoxelData.ChunkHeight - 1 || z < 0 || z > VoxelData.ChunkWidth - 1)
+        if (x < 0 || x > world._chunkSize - 1 || y < 0 || y > world._chunkSize - 1 || z < 0 || z > world._chunkSize - 1)
             return false;
         else
             return true;
@@ -202,7 +203,7 @@ public class Chunk
             
             if (!IsVoxelInChunk((int)currentVoxel.x, (int)currentVoxel.y, (int)currentVoxel.z))
             {
-                if(world.IsVoxelInWorld(currentVoxel + position)) 
+                if(world.IsPosInWorld(currentVoxel + position)) 
                 world.GetChunkFromVector3(currentVoxel + position).UpdateChunk();
 
             }
@@ -218,9 +219,9 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.z);
 
         if (!IsVoxelInChunk(x, y, z))
-            return world.blocktypes[world.GetVoxel(pos + position)].isSolid;
+            return world._blocktypes[world.GetVoxel(pos + position)].isSolid;
 
-        return world.blocktypes[voxelMap[x, y, z]].isSolid;
+        return world._blocktypes[voxelMap[x, y, z]].isSolid;
 
     }
 
@@ -232,9 +233,9 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.z);
 
         if (!IsVoxelInChunk(x, y, z))
-            return world.blocktypes[world.GetVoxel(pos + position)].unimportant;
+            return world._blocktypes[world.GetVoxel(pos + position)].unimportant;
 
-        return world.blocktypes[voxelMap[x, y, z]].unimportant;
+        return world._blocktypes[voxelMap[x, y, z]].unimportant;
 
     }
 
@@ -246,9 +247,9 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.z);
 
         if (!IsVoxelInChunk(x, y, z))
-            return world.blocktypes[world.GetVoxel(pos + position)].transparency_I_think;
+            return world._blocktypes[world.GetVoxel(pos + position)].transparency_I_think;
 
-        return world.blocktypes[voxelMap[x, y, z]].transparency_I_think;
+        return world._blocktypes[voxelMap[x, y, z]].transparency_I_think;
 
     }
 
@@ -261,9 +262,9 @@ public class Chunk
 
        // Currently Unneeded:  bool solid = world.blocktypes[blockID].isSolid;
 
-        bool transparency_I_think = world.blocktypes[blockID].transparency_I_think; //TODO: transparency properly?
+        bool transparency_I_think = world._blocktypes[blockID].transparency_I_think; //TODO: transparency properly?
 
-        bool unimportant = world.blocktypes[blockID].unimportant;
+        bool unimportant = world._blocktypes[blockID].unimportant;
 
         for (int p = 0; p < 6; p++)
         {
@@ -299,7 +300,7 @@ public class Chunk
                 vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
                 vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
 
-                AddTexture(world.blocktypes[blockID].GetTextureID(p));
+                AddTexture(world._blocktypes[blockID].GetTextureID(p));
 
                 if (!transparency_I_think && !unimportant)
                 {

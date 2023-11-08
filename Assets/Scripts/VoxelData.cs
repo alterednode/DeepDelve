@@ -2,35 +2,6 @@ using UnityEngine;
 
 public static class VoxelData
 {
-    //Read these from a config file?
-    //maybe not chunk hieght/width
-
-
-    //all of these ints should be powers of 2
-
-    // amount of chunks to load at first
-    public static readonly int startAreaWidth = 2; // should be power of 2
-    public static readonly int startAreaHeight = 2;
-
-    public static readonly int ChunkWidth = 16; // Width of chunk in blocks
-    public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
-    
-    public static readonly int WorldWidthChunks = 128;  //TODO: update this
-    public static readonly int WorldHeightChunks = 128; //TODO: update this
-
-    public static readonly float PosPerlinScaling = 9.3f;
-    public static readonly float oreTreshold = 0.7f; // used with perlin [-1,1] noise
-
-    public static Material[] materials;
-    public static int WorldWidthInVoxels
-    {
-        get { return ChunkWidth * WorldWidthChunks; }
-    }
-    public static int WorldHeightInVoxels
-    {
-        get { return ChunkHeight * WorldHeightChunks; }
-    }
-
     //texure atlas is n blocks square of same width blocks
     public static readonly int TextureAtlasSizeInBlocks = 4;
     public static float NormalizedBlockTextureSize
