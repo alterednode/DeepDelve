@@ -5,6 +5,8 @@
 - [ ] Deal with [[Player]] trying to do things outside of play area #world #player #feature 
 - [ ] Make [[World]] and other things not rely on direct references to [[VoxelData]] #world #VoxelData #improvement
 - [ ] Actual [[Player]] [[Blocks|Block]] placement #chunk #player #feature #blocks 
+- [ ] Figure out what to call the various [[Blocks|Blocks]]
+- [ ] 
 
 
 QOL tasks for later (good to assign to Roman)
