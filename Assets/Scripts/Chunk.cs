@@ -52,7 +52,6 @@ public class Chunk
 
         PopulateVoxelMap();
         UpdateChunk();
-
     }
 
     void PopulateVoxelMap()
@@ -107,6 +106,8 @@ public class Chunk
         uvs.Clear();
 
     }
+
+    //is this used anywhere? its similar to the middle of updateChunk
     void CreateMeshData()
     {
 
@@ -129,10 +130,7 @@ public class Chunk
         get { return chunkObject.transform.position; }
     }
 
-    public bool HasSameCoord(Chunk otherChunk)
-    {
-        return(coord.CompareCoord(otherChunk.coord));
-    }
+
     public bool IsVoxelInChunk(int x, int y, int z)
     {
         if (x < 0 || x > VoxelData.ChunkWidth - 1 || y < 0 || y > VoxelData.ChunkHeight - 1 || z < 0 || z > VoxelData.ChunkWidth - 1)
@@ -144,8 +142,6 @@ public class Chunk
     public bool IsVoxelInChunk(Vector3 pos)
     {
         return IsVoxelInChunk(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
-
-
     }
 
 

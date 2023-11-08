@@ -1,27 +1,56 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    public bool simpleGen = false;
-    public bool regenWorld = false;
+    /// <summary>
+    /// X size of world in BigChunks
+    /// </summary>
+    public readonly int _worldXSize;
+    /// <summary>
+    /// Y size of world in BigChunks
+    /// </summary>
+    public readonly int _worldYSize;
+    /// <summary>
+    /// Z size of world in BigChunks
+    /// </summary>
+    public readonly int _worldZSize;
 
+    /// <summary>
+    /// Width of BigChunks in Chunks
+    /// </summary>
+    public readonly int _bigChunkWidth;
+    /// <summary>
+    /// Height of BigChunks in Chunks
+    /// </summary>
+    public readonly int _bigChunkHeight;
+
+    /// <summary>
+    /// Size of axisis in voxels (1m)
+    /// </summary>
+    public readonly int _chunkSize;
+
+    /// <summary>
+    /// player spawns in this side 
+    /// (0,0,0) is the middle of the world
+    /// (0,1,0) is the top middle of the 
+    /// </summary>
+    public Vector3Int _spawnSide = new Vector3Int(0, 0, 0);
+
+    public Vector3 spawnPosition;
 
     public GameObject player;
-    public Vector3 spawnPosition; //set in Start()
 
     public Material material;
     public Material transparentMaterial;
+
     public BlockType[] blocktypes;
 
 
-    Chunk[,,] chunks = new Chunk[
-        VoxelData.WorldWidthChunks,
-        VoxelData.WorldHeightChunks,
-        VoxelData.WorldWidthChunks
-    ];
+    BigChunk[,,] bigChunks;
 
     [SerializeField]
     public List<Chunk> chunksToUpdate = new List<Chunk>();
@@ -30,119 +59,83 @@ public class World : MonoBehaviour
     public List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
     public bool isCreatingChunks = false;
 
-    private void Start()
-    {
-        Debug.Log("starting start");
-        spawnPosition = new Vector3(
-            VoxelData.WorldWidthInVoxels / 2,
-            VoxelData.WorldHeightInVoxels + 5,
-            VoxelData.WorldWidthInVoxels / 2
-        );
-        GenerateWorld();
-        Debug.Log("world gened");
 
+
+    public World(int worldXSize, int worldYSize, int worldZSize, int bigChunkWidth, int BigChunkHeight, int ChunkSize, Vector3Int spawnSide)
+    {
+        //set all these variables
+        _worldXSize = worldXSize;
+        _worldYSize = worldYSize;
+        _worldZSize = worldZSize;
+        _bigChunkWidth = bigChunkWidth;
+        _bigChunkHeight = BigChunkHeight;
+        _chunkSize = ChunkSize;
+        _spawnSide = spawnSide;
+
+
+        //make a bigChunk array of the right Size
+        bigChunks = new BigChunk[
+       _worldXSize, 
+       _worldYSize,
+       _worldZSize
+    ];
+
+        Debug.Log("starting start"); //ooh boy we starting
+
+        //using the SpawnSide
+        spawnPosition = new Vector3(
+            ((_worldXSize / 2) + (_worldXSize * spawnSide.x)),
+            ((_worldYSize / 2) + (_worldYSize * spawnSide.y)),
+            ((_worldZSize / 2) + (_worldZSize * spawnSide.z))
+        );
+        
     }
+
+
 
     private void Update()
     {
 
-
-        if (regenWorld)
-        {
-            regenWorld = false;
-
-            Vector3 oldplayerPos = player.transform.position;
-            GenerateWorld();
-            player.transform.position = oldplayerPos;
-            for (int x = 0; x < VoxelData.WorldWidthChunks - 1; x++)
-            {
-                for (int y = 0; y < VoxelData.WorldHeightChunks - 1; y++)
-                {
-                    for (int z = 0; z < VoxelData.WorldWidthChunks - 1; z++)
-                    {
-                        chunksToUpdate.Add(chunks[x, y, z]);
-                    }
-                }
-            }
-        }
-
-        //temporary thing
-        PlayerGenerateNewChunk();
-
-
+        //convert
         if (chunksToUpdate.Count > 0 && !isUpdatingChunks)
 
             StartCoroutine("UpdateChunks");
 
 
-
+        // this should be moved to Big Chunk
         if (chunksToCreate.Count > 0 && !isCreatingChunks)
             StartCoroutine("CreateChunks");
 
     }
 
-    void PlayerGenerateNewChunk()
-    {
-        if (!IsVoxelInLoadedChunk(player.transform.position) && IsVoxelInWorld(player.transform.position))
-        {
-            ChunkCoord newChunkLocation = GetChunkCoordFromVector3(player.transform.position);
-            CreateNewChunk(newChunkLocation.x, newChunkLocation.y, newChunkLocation.z);
-            for (int i = 0; i < 6; i++)
-            {
-                //need to update mesh of adjacent chunks
-                Vector3 newChunkVoxelCoordinates = player.transform.position + VoxelData.faceCheckVectors[i] * VoxelData.ChunkWidth;
-                if (IsVoxelInLoadedChunk(newChunkVoxelCoordinates) && IsVoxelInWorld(newChunkVoxelCoordinates))
-                {
-                    Vector3 updateChunkCoordinates = newChunkLocation.ToVector3() + VoxelData.faceCheckVectors[i];
-                    chunksToUpdate.Add(chunks[(int)updateChunkCoordinates.x, (int)updateChunkCoordinates.y, (int)updateChunkCoordinates.z]);
-                }
-            }
-        }
-    }
+ 
     public ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
     {
-        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
-        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight);
-        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
-
+        int x = Mathf.FloorToInt(pos.x / (_chunkSize * _bigChunkWidth));
+        int y = Mathf.FloorToInt(pos.y / (_chunkSize * _bigChunkHeight));
+        int z = Mathf.FloorToInt(pos.z / (_chunkSize * _bigChunkWidth));
         return new ChunkCoord(x, y, z);
     }
 
+    public BigChunkCoord GetBigChunkCoordFromVector3(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth) % _chunkSize;
+        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight) % _chunkSize;
+        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth) % _chunkSize;
+        return new BigChunkCoord(x, y, z);
+    }
+    public BigChunk GetBigChunkFromVector3(Vector3 pos)
+    {
+        BigChunkCoord bigChunkLocation = GetBigChunkCoordFromVector3(pos);
+        return bigChunks[bigChunkLocation.x, bigChunkLocation.y, bigChunkLocation.z];
+    }
     public Chunk GetChunkFromVector3(Vector3 pos)
     {
-
-        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
-        int y = Mathf.FloorToInt(pos.y / VoxelData.ChunkHeight);
-        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
-        return chunks[x, y, z];
-
+        BigChunk bigChunk = GetBigChunkFromVector3(pos);
+        ChunkCoord subBigLocation = GetChunkCoordFromVector3(pos);
+        return bigChunk.chunks[subBigLocation.x, subBigLocation.y, subBigLocation.z];
     }
 
-    /// <summary>
-    /// Creates new chunks based on the world's width and height
-    /// </summary>
-    void GenerateWorld()
-    {
-
-        int horizMidPoint = VoxelData.WorldWidthChunks / 2;
-
-
-        for (int y = VoxelData.WorldHeightChunks - 1; y >= VoxelData.WorldHeightChunks - VoxelData.startAreaHeight * 2; y--)
-        {
-            for (int x = horizMidPoint - VoxelData.startAreaWidth; x < horizMidPoint + VoxelData.startAreaWidth; x++)
-            {
-                for (int z = horizMidPoint - VoxelData.startAreaWidth; z < horizMidPoint + VoxelData.startAreaWidth; z++)
-                {
-
-                    CreateNewChunk(x, y, z);
-
-                }
-            }
-        }
-
-        player.transform.position = spawnPosition + new Vector3(.5f, .5f, .5f); //account for offset of player
-        player.GetComponent<OnyxBasicPlayerMovement>().realPosition = player.transform.position;
-    }
 
     /// <summary>
     /// Runs the Init() part of a chunk

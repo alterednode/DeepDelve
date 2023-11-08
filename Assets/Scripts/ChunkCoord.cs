@@ -30,8 +30,12 @@ public class ChunkCoord
 
 
     }
-    public ChunkCoord(int _x, int _z) : //TODO: learn why this is the right way, chatGPT spat this out :)
-        this(_x, 0, _z)
+}
+
+
+public class BigChunkCoord : ChunkCoord
+{
+    public BigChunkCoord(int _x, int _y, int _z) : base(_x, _y, _z)
     {
     }
 }
