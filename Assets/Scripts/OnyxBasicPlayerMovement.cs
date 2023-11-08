@@ -169,11 +169,12 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     private void HandleCamera()
     {
+        //dont require right click to change zoom
+        ChangeCameraDistanceFromPlayer();
 
         if (Input.GetMouseButton(1))
         {
             ChangeCameraRotationSpeedTo(cameraMoveSpeed);
-            ChangeCameraDistanceFromPlayer();
         }
         else
         {

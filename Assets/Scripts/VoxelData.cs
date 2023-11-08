@@ -5,9 +5,12 @@ public static class VoxelData
     //Read these from a config file?
     //maybe not chunk hieght/width
 
+
+    //all of these ints should be powers of 2
+
     // amount of chunks to load at first
-    public static readonly int startAreaWidth = 4;
-    public static readonly int startAreaHeight = 8;
+    public static readonly int startAreaWidth = 2; // should be power of 2
+    public static readonly int startAreaHeight = 2;
 
     public static readonly int ChunkWidth = 16; // Width of chunk in blocks
     public static readonly int ChunkHeight = 16; //Height of chunk in blocks  //IDEA: each chunk layer could unlock new thing, or n layers of chunks
