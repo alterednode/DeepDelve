@@ -62,6 +62,14 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     }
 
+    public Vector3 RealVoxelCoord
+    {
+        get { return realPosition - new Vector3(0.5f,0.5f,0.5f) ; }
+    }
+    public Vector3 VoxelCoord
+    {
+        get { return transform.position - new Vector3(0.5f, 0.5f, 0.5f); }
+    }
     private void DoVoxelPlacement()
     {
 

@@ -71,11 +71,9 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public bool setup = false;
 
-    private void Start()
-    {
-        this.transform.position = Vector3.zero;
-        this.name = "World";
-    }
+
+
+    
     private void Update()
     {
 
@@ -89,8 +87,13 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
             StartCoroutine("CreateChunks");
 
     }
-    public void Setup(int worldXSize, int worldYSize, int worldZSize, int bigChunkWidth, int BigChunkHeight, int ChunkSize, Vector3Int spawnSide, BlockType[] blockTypes, GenerationType generationType)
+    public void Setup(int worldXSize, int worldYSize, int worldZSize, int bigChunkWidth, int BigChunkHeight, int ChunkSize, Vector3Int spawnSide, Material[] materials, BlockType[] blockTypes, GenerationType generationType)
     {
+        material = materials[0];
+        transparentMaterial = materials[1];
+
+        this.transform.position = Vector3.zero;
+        this.name = "World";
         //set all these variables
         _worldXSize = worldXSize;
         _worldYSize = worldYSize;
@@ -118,9 +121,9 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
         //using the SpawnSide
         spawnPosition = new Vector3(
-            ((_worldXSize / 2) + (_worldXSize / 2 * spawnSide.x) - spawnSide.x),
-            ((_worldYSize / 2) + (_worldYSize / 2 * spawnSide.y) - spawnSide.y),
-            ((_worldZSize / 2) + (_worldZSize / 2 * spawnSide.z) - spawnSide.z)
+            ((_worldXLengthInVoxels / 2) + (_worldXLengthInVoxels / 2 * spawnSide.x) - spawnSide.x),
+            ((_worldYLengthInVoxels / 2) + (_worldYLengthInVoxels / 2 * spawnSide.y) - spawnSide.y),
+            ((_worldZLengthInVoxels / 2) + (_worldZLengthInVoxels / 2 * spawnSide.z) - spawnSide.z)
         );
 
         this.generationType = generationType;
@@ -152,24 +155,30 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
     {
         BigChunkCoord coord = new BigChunkCoord(x, y, z);
         bigChunks[x,y,z] = new BigChunk(coord, this);
+    }
 
+    public void LoadBigChunk(Vector3 pos)
+    {
+        GetBigChunkFromVector3(pos).Load();
     }
 
 
 
     public ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
     {
-        int x = Mathf.FloorToInt(pos.x / (_chunkSize * _bigChunkWidth));
-        int y = Mathf.FloorToInt(pos.y / (_chunkSize * _bigChunkHeight));
-        int z = Mathf.FloorToInt(pos.z / (_chunkSize * _bigChunkWidth));
+        int x = (Mathf.FloorToInt(pos.x / _chunkSize)) % _bigChunkWidth;
+        int y = (Mathf.FloorToInt(pos.y / _chunkSize)) % _bigChunkHeight;
+        int z = (Mathf.FloorToInt(pos.z / _chunkSize)) % _bigChunkWidth;
+
         return new ChunkCoord(x, y, z);
     }
 
     public BigChunkCoord GetBigChunkCoordFromVector3(Vector3 pos)
     {
-        int x = Mathf.FloorToInt(pos.x / _bigChunkWidth) % _chunkSize;
-        int y = Mathf.FloorToInt(pos.y / _bigChunkHeight) % _chunkSize;
-        int z = Mathf.FloorToInt(pos.z / _bigChunkWidth) % _chunkSize;
+
+        int x = Mathf.FloorToInt(pos.x / (_chunkSize * _bigChunkWidth));
+        int y = Mathf.FloorToInt(pos.y / (_chunkSize * _bigChunkHeight));
+        int z = Mathf.FloorToInt(pos.z / (_chunkSize * _bigChunkWidth));
         return new BigChunkCoord(x, y, z);
     }
     public BigChunk GetBigChunkFromVector3(Vector3 pos)
@@ -233,8 +242,6 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
     /// <returns>
     /// byte BlockID
     /// </returns>
-
-    //maybe change to choose / generate voxel and add a getVoxel func that will get a voxel from a chunk at a position
     public byte GenerateVoxel(Vector3 pos)
     {
 
@@ -249,34 +256,23 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public byte GetVoxel(Vector3 pos)
     {
-        BigChunk bigChunk = GetBigChunkFromVector3(pos);
-        ChunkCoord chunkLocation = GetChunkCoordFromVector3(pos);
-        if (bigChunk.chunks[chunkLocation.x, chunkLocation.y, chunkLocation.z] == null)
-        {
+        if (!IsPosInWorld(pos))
+        {//if the pos is not in the world it is air
             return 0;
         }
-        Chunk curChunk = GetChunkFromVector3(pos);
-        if (curChunk.isVoxelMapPopulated)
+        if (IsVoxelInLoadedChunk(pos))
+        {
+            Chunk curChunk = GetChunkFromVector3(pos);
             return curChunk.GetVoxel(pos);
+        }
         else
+        {
             return GenerateVoxel(pos);
+        }
     }
 
 
-    bool IsChunkInWorld(ChunkCoord coord)
-    {
-        if (
-            coord.x > 0
-            && coord.x < (_worldXSize * _chunkSize) - 1
-            && coord.y > 0
-            && coord.y < (_worldYSize * _chunkSize) - 1
-            && coord.z > 0
-            && coord.z < (_worldZSize * _chunkSize) - 1
-        )
-            return true;
-        else
-            return false;
-    }
+
 
     public bool IsPosInWorld(Vector3 pos)
     {
@@ -293,16 +289,30 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
             return false;
     }
 
-    public bool IsVoxelInLoadedChunk(Vector3 pos)
+    public bool IsVoxelInLoadedBigChunk(Vector3 pos)
     {
         if (IsPosInWorld(pos))
         {
-            BigChunkCoord coordinate = GetBigChunkCoordFromVector3((Vector3)pos);
-            return !(bigChunks[coordinate.x, coordinate.y, coordinate.z] == null);
+            BigChunk bigChunk = GetBigChunkFromVector3(pos);
+            if(!(bigChunk == null))
+            {
+                return bigChunk.isLoaded;
+            }
         }
-        else
-        {
             return false;
+        
+    }
+
+    public bool IsVoxelInLoadedChunk(Vector3 pos)
+    {
+        if (IsVoxelInLoadedBigChunk(pos))
+        {
+            Chunk chunk = GetChunkFromVector3(pos);
+          if (!(chunk == null))
+            {
+                return chunk.isVoxelMapPopulated;
+            }
         }
+            return false;
     }
 }

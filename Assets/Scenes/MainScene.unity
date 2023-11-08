@@ -1049,6 +1049,9 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   debugScreenObject: {fileID: 114832078}
   debugScreen: {fileID: 0}
+  materials:
+  - {fileID: 2100000, guid: 2128f3524780f5243a69db27c2f2a8b6, type: 2}
+  - {fileID: 2100000, guid: e9cdd9351166c924b909990f40ecf7d3, type: 2}
   activeBlockset:
   - blockName: Air
     isSolid: 0
@@ -1070,7 +1073,7 @@ MonoBehaviour:
     bottomFaceTexture: 9
     leftFaceTexture: 9
     rightFaceTexture: 9
-  STARTDOINSHIT: 0
+  STARTDOINSHIT: 1
 --- !u!4 &1086897698
 Transform:
   m_ObjectHideFlags: 0

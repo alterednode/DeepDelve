@@ -7,6 +7,7 @@ using UnityEngine;
 public class BigChunk 
 {
     World world;
+    public BigChunkCoord bigCoord;
     public GameObject bigChunkObject;
 
     public readonly int _bigChunkWidth;
@@ -26,13 +27,18 @@ public class BigChunk
     public BigChunk(BigChunkCoord coord, World world)
     {
         this.world = world;
+        bigCoord = coord;
 
         chunks = new Chunk[world._bigChunkWidth, world._bigChunkHeight, world._bigChunkWidth];
 
         bigChunkObject = new GameObject();
         bigChunkObject.transform.SetParent(world.gameObject.transform);
-        bigChunkObject.transform.position = new Vector3(coord.x * world._bigChunkWidth, coord.y * world._bigChunkHeight, coord.z * world._bigChunkWidth);
-        bigChunkObject.transform.name = "BigChunk " + coord.x + ", " + coord.y + ", " + coord.z;
+        bigChunkObject.transform.position = new Vector3(
+            bigCoord.x * world._bigChunkWidth * world._chunkSize, 
+            bigCoord.y * world._bigChunkHeight * world._chunkSize, 
+            bigCoord.z * world._bigChunkWidth * world._chunkSize
+            );
+        bigChunkObject.transform.name = "BigChunk " + bigCoord.x + ", " + bigCoord.y + ", " + bigCoord.z;
 
 
     }

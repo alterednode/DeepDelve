@@ -29,16 +29,8 @@ public class Chunk
     public bool isVoxelMapPopulated = false;
     public Chunk(ChunkCoord coord, World world, BigChunk bigChunk)
     {
-        this.coord = coord;
-        this.world = world;
-        this.bigChunk = bigChunk;
-        voxelMap = new byte[world._chunkSize, world._chunkSize, world._chunkSize];
-    }   
-
-    public void Init()
-    {
-
         chunkObject = new GameObject();
+
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
 
@@ -47,10 +39,18 @@ public class Chunk
         meshRenderer.materials = materials;
 
         chunkObject.transform.SetParent(bigChunk.bigChunkObject.transform);
-        chunkObject.transform.position = new Vector3(coord.x * world._chunkSize, coord.y * world._chunkSize, coord.z * world._chunkSize);
+        //could the bigChunk position stuff be simplified here
+        chunkObject.transform.position = new Vector3(bigChunk.bigChunkObject.transform.position.x + coord.x * world._chunkSize, bigChunk.bigChunkObject.transform.position.y + coord.y * world._chunkSize, bigChunk.bigChunkObject.transform.position.z + coord.z * world._chunkSize);
         chunkObject.name = "Chunk " + coord.x + ", " + coord.y + ", " + coord.z;
 
+        this.coord = coord;
+        this.world = world;
+        this.bigChunk = bigChunk;
+        voxelMap = new byte[world._chunkSize, world._chunkSize, world._chunkSize];
+    }   
 
+    public void Init()
+    {
         PopulateVoxelMap();
         UpdateChunk();
     }

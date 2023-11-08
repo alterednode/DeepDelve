@@ -52,7 +52,7 @@ public class DebugScreen : MonoBehaviour
         debugText += "\n";
         debugText += "/\\ Change with numkeys";
         debugText += "\n";
-        if (world.IsPosInWorld(playerScript.realPosition))
+        if (world.IsVoxelInLoadedBigChunk(playerScript.realPosition))
         {
             debugText += "Player Inside Block:";
             debugText += "\n";
@@ -60,7 +60,7 @@ public class DebugScreen : MonoBehaviour
         }
         else
         {
-            debugText += "Player not in world\n\n";
+            debugText += "Player not in Loaded BigChunk\n\n";
         }
         debugText += "\n";
         if (world.isCreatingChunks)
