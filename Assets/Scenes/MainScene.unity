@@ -1634,7 +1634,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 500, y: 105}
+  m_AnchoredPosition: {x: 500, y: 143}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1838326866
@@ -1671,7 +1671,10 @@ MonoBehaviour:
     Multi block
     selection: LeftShift
 
-'
+    Choose Block: numKey
+
+    Place Block or multi block
+    selection: Enter or left click'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2bc75ad0b38752c4ba92dcd207a34401, type: 2}
   m_sharedMaterial: {fileID: 349896444682146119, guid: 2bc75ad0b38752c4ba92dcd207a34401,
