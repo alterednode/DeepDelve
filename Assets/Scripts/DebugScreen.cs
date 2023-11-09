@@ -50,8 +50,6 @@ public class DebugScreen : MonoBehaviour
         debugText += "\n";
         debugText += "Selected Block: \nID: " + playerScript.selectedBlockID + " \nName: " + world._blocktypes[playerScript.selectedBlockID].blockName;
         debugText += "\n";
-        debugText += "/\\ Change with numkeys";
-        debugText += "\n";
         if (world.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord))
         {
             debugText += "Player Inside Block:";
