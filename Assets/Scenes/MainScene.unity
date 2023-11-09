@@ -355,7 +355,7 @@ MonoBehaviour:
   world: {fileID: 0}
   moveSpeed: 10
   realPosition: {x: 0, y: 0, z: 0}
-  selectedBlockID: 1
+  selectedBlockID: 0
   cameraMoveSpeed: 300
   zoomSpeed: 20
   minZoom: 2
@@ -1073,6 +1073,56 @@ MonoBehaviour:
     bottomFaceTexture: 9
     leftFaceTexture: 9
     rightFaceTexture: 9
+  - blockName: Ore1
+    isSolid: 1
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 4
+    frontFaceTexture: 4
+    topFaceTexture: 4
+    bottomFaceTexture: 4
+    leftFaceTexture: 4
+    rightFaceTexture: 4
+  - blockName: Ore2
+    isSolid: 1
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 6
+    frontFaceTexture: 6
+    topFaceTexture: 6
+    bottomFaceTexture: 6
+    leftFaceTexture: 6
+    rightFaceTexture: 6
+  - blockName: Dirt
+    isSolid: 1
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 1
+    frontFaceTexture: 1
+    topFaceTexture: 1
+    bottomFaceTexture: 1
+    leftFaceTexture: 1
+    rightFaceTexture: 1
+  - blockName: Grass
+    isSolid: 1
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 1
+    frontFaceTexture: 1
+    topFaceTexture: 2
+    bottomFaceTexture: 1
+    leftFaceTexture: 1
+    rightFaceTexture: 1
+  - blockName: Bedrock
+    isSolid: 1
+    unimportant: 0
+    transparency_I_think: 0
+    backFaceTexture: 3
+    frontFaceTexture: 3
+    topFaceTexture: 3
+    bottomFaceTexture: 3
+    leftFaceTexture: 3
+    rightFaceTexture: 3
   STARTDOINSHIT: 1
 --- !u!4 &1086897698
 Transform:

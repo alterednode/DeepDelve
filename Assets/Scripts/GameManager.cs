@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
         Debug.LogWarning("STARTDOINSHIT START START");
 
         int startTime = System.DateTime.Now.ToUniversalTime().Millisecond;
-        activeWorld = CreateWorld(512, 512, 512, 2, 4, 16, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationSimple());
+        activeWorld = CreateWorld(512, 512, 512, 2, 4, 16, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationDeepDelve());
         Debug.LogWarning("World created In :" + (System.DateTime.Now.ToUniversalTime().Millisecond - startTime) + " Milliseconds");
 
         playerScript.world = activeWorld;

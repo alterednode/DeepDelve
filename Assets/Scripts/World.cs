@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class World : MonoBehaviour //TODO: turn this into not a monobehaviour once threading done and we can remove the coroutines
 
@@ -60,7 +59,8 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public BlockType[] _blocktypes;
 
-
+    // should this be converted to a dict to allow for literal infinite world?
+    // TODO: learn more about datatypes i guess lol
     BigChunk[,,] bigChunks;
 
     [SerializeField]

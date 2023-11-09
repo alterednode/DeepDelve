@@ -95,8 +95,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
 
                 // for each voxel contained within the min and max point set it to the new blockID (selectedBlockID)
-                //REWRITE: redo this
-                /*
+                
                 for (int x = (int)minpoint.x; x < (int)maxpoint.x; x++)
                 {
                     for (int y = (int)minpoint.y; y < (int)maxpoint.y; y++)
@@ -111,7 +110,10 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
                             { // dont even bother with voxels out of the world.
                                 return;
                             }
-
+                            if (!world.IsVoxelInLoadedBigChunk(blockLocation))
+                            {
+                                return;
+                            }
                             Chunk curChunk = world.GetChunkFromVector3(blockLocation);
                             curChunk.DirectlySetVoxel(blockLocation, selectedBlockID);
 
@@ -122,25 +124,25 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                     }
                 }
-                */
+                
 
 
-                /*
-                 * This needs to be redone
-                 //REWRITE: redo this
-                 * 
+                
+                 // This needs to be redone
+                 
+                 
                 minpoint -= Vector3.one;
-                maxpoint += Vector3.one + new Vector3(VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth);
+                maxpoint += Vector3.one + new Vector3(world._chunkSize, world._chunkSize, world._chunkSize);
 
-                for (int x = ((int)minpoint.x); x < (int)maxpoint.x ; x+=VoxelData.ChunkWidth)
+                for (int x = ((int)minpoint.x); x < (int)maxpoint.x ; x+= world._chunkSize)
                 {
-                    for (int y = (int)minpoint.y; y < (int)maxpoint.y; y+= VoxelData.ChunkHeight)
+                    for (int y = (int)minpoint.y; y < (int)maxpoint.y; y+= world._chunkSize)
                     {
-                        for (int z = (int)minpoint.z; z < (int)maxpoint.z; z+= VoxelData.ChunkWidth)
+                        for (int z = (int)minpoint.z; z < (int)maxpoint.z; z+= world._chunkSize)
                         {
                            Vector3 location =  new Vector3(x, y, z);
 
-                            if(world.IsVoxelInLoadedChunk(location))
+                            if(world.IsVoxelInLoadedBigChunk(location))
                             world.chunksToUpdate.Add(world.GetChunkFromVector3(location));
 
 
@@ -150,7 +152,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
                     }
                 }
-                */
+                
             }
         }
     }
