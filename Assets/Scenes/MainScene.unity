@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.14339349, g: 0.15341045, b: 0.22602735, a: 1}
+  m_IndirectSpecularColor: {r: 0.14348724, g: 0.15348794, b: 0.22610618, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1108,12 +1108,12 @@ MonoBehaviour:
     isSolid: 1
     unimportant: 0
     transparency_I_think: 0
-    backFaceTexture: 1
-    frontFaceTexture: 1
-    topFaceTexture: 2
+    backFaceTexture: 2
+    frontFaceTexture: 2
+    topFaceTexture: 7
     bottomFaceTexture: 1
-    leftFaceTexture: 1
-    rightFaceTexture: 1
+    leftFaceTexture: 2
+    rightFaceTexture: 2
   - blockName: Bedrock
     isSolid: 1
     unimportant: 0
