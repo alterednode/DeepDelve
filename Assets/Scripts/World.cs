@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class World : MonoBehaviour //TODO: turn this into not a monobehaviour once threading done and we can remove the coroutines
 
@@ -117,13 +118,13 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
        _worldZSize
         ];
 
-        Debug.Log("starting start"); //ooh boy we starting
+        Debug.Log("starting world"); //ooh boy we starting
 
         //using the SpawnSide
         spawnPosition = new Vector3(
-            ((_worldXLengthInVoxels / 2) + (_worldXLengthInVoxels / 2 * spawnSide.x) - spawnSide.x),
-            ((_worldYLengthInVoxels / 2) + (_worldYLengthInVoxels / 2 * spawnSide.y) - spawnSide.y),
-            ((_worldZLengthInVoxels / 2) + (_worldZLengthInVoxels / 2 * spawnSide.z) - spawnSide.z)
+            ((_worldXLengthInVoxels / 2) + (_worldXLengthInVoxels / 2 * spawnSide.x) - spawnSide.x ),
+            ((_worldYLengthInVoxels / 2) + (_worldYLengthInVoxels / 2 * spawnSide.y) - spawnSide.y ),
+            ((_worldZLengthInVoxels / 2) + (_worldZLengthInVoxels / 2 * spawnSide.z) - spawnSide.z )
         );
 
         this.generationType = generationType;
@@ -133,22 +134,36 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public void Init()
     {
-        for(int x = 0; x < _worldXSize; x++)
+        //kinda suprised this is all this needs
+        //HAHA LOL NVM
+        //and again lol
+
+
+        BigChunkCoord spawnBigChunkcoord = GetBigChunkCoordFromVector3(spawnPosition);
+        CreateBigChunk(spawnBigChunkcoord.x, spawnBigChunkcoord.y, spawnBigChunkcoord.z);
+        GetBigChunkFromVector3(spawnPosition).Load();
+        PreloadNearbyChunks(spawnBigChunkcoord);
+    }
+
+    void PreloadNearbyChunks(BigChunkCoord coord)
+    {
+        for(int x = -1; x <= 1; x++)
         {
-            for(int y = 0; y < _worldYSize; y++)
+            for (int y = -1; y <= 1; y++)
             {
-                for (int z =  0; z < _worldZSize; z++)
+                for ( int z = -1; z <= 1; z++)
                 {
-                    Debug.Log("Created BigChunk " + x + ", " + y + ", " + z);
-                    CreateBigChunk(x, y, z);
+                    BigChunkCoord newCoord = new BigChunkCoord(x + coord.x, y + coord.y, z + coord.z);
+                    if (IsBigChunkCoordInWorld(newCoord))
+                    {
+                        if (bigChunks[newCoord.x , newCoord.y , newCoord.z]==null)
+                        {
+                            CreateBigChunk(newCoord.x , newCoord.y, newCoord.z);
+                        }
+                    }
                 }
             }
         }
-
-        //kinda suprised this is all this needs
-        //HAHA LOL NVM
-        GetBigChunkFromVector3(spawnPosition).Load();
-
     }
 
     void CreateBigChunk(int x, int y, int z)
@@ -159,7 +174,9 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public void LoadBigChunk(Vector3 pos)
     {
-        GetBigChunkFromVector3(pos).Load();
+        BigChunk bigChunk = GetBigChunkFromVector3(pos);
+        bigChunk.Load();
+        PreloadNearbyChunks(bigChunk.bigCoord);
     }
 
 
@@ -204,7 +221,6 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
         isCreatingChunks = true;
         while (chunksToCreate.Count > 0)
         {
-            Debug.Log("Initalizing chunk");
             chunksToCreate[0].Init();
             chunksToCreate.RemoveAt(0);
             yield return null;
@@ -224,7 +240,6 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
         isUpdatingChunks = true;
         while (chunksToUpdate.Count > 0)
         {
-            Debug.Log("Updating chunk" + chunksToUpdate[0].coord.ToString());
             chunksToUpdate[0].UpdateChunk();
             chunksToUpdate.RemoveAt(0);
             yield return null;
@@ -284,6 +299,21 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
             && pos.z >= 0
             && pos.z < _worldZLengthInVoxels
         )
+            return true;
+        else
+            return false;
+    }
+
+    public bool IsBigChunkCoordInWorld(BigChunkCoord coord)
+    {
+        if (
+    coord.x >= 0
+    && coord.x < _worldXSize
+    && coord.y >= 0
+    && coord.y < _worldYSize
+    && coord.z >= 0
+    && coord.z < _worldZSize
+)
             return true;
         else
             return false;

@@ -40,23 +40,23 @@ public class DebugScreen : MonoBehaviour
         debugText += "\n";
         debugText += "Resolution: " + Screen.width + "x" + Screen.height;
         debugText += "\n";
-        debugText += "Soft XYZ: \nX: " + player.transform.position.x.ToString("n2") + "Y: " + player.transform.position.y.ToString("n2") + "Z: " + player.transform.position.z.ToString("n2");
+        debugText += "Soft XYZ: \nX: " + playerScript.VoxelCoord.x.ToString("n2") + "Y: " + playerScript.VoxelCoord.y.ToString("n2") + "Z: " + playerScript.VoxelCoord.z.ToString("n2");
         debugText += "\n";
-        debugText += "Hard XYZ: \nX: " + playerScript.realPosition.x + "Y: " + playerScript.realPosition.y + "Z: " + playerScript.realPosition.z;
+        debugText += "Hard XYZ: \nX: " + playerScript.RealVoxelCoord.x + "Y: " + playerScript.RealVoxelCoord.y + "Z: " + playerScript.RealVoxelCoord.z;
         debugText += "\n";
-        debugText += "Chunk: " + world.GetChunkCoordFromVector3(playerScript.realPosition).ToString();
+        debugText += "Chunk: " + world.GetChunkCoordFromVector3(playerScript.RealVoxelCoord).ToString();
         debugText += "\n";
-        debugText += "BigChunk: " + world.GetBigChunkCoordFromVector3(playerScript.realPosition).ToString();
+        debugText += "BigChunk: " + world.GetBigChunkCoordFromVector3(playerScript.RealVoxelCoord).ToString();
         debugText += "\n";
         debugText += "Selected Block: \nID: " + playerScript.selectedBlockID + " \nName: " + world._blocktypes[playerScript.selectedBlockID].blockName;
         debugText += "\n";
         debugText += "/\\ Change with numkeys";
         debugText += "\n";
-        if (world.IsVoxelInLoadedBigChunk(playerScript.realPosition))
+        if (world.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord))
         {
             debugText += "Player Inside Block:";
             debugText += "\n";
-            debugText += "ID: " + world.GetVoxel(playerScript.realPosition) + "\nName: " + world._blocktypes[world.GetVoxel(playerScript.realPosition)].blockName;
+            debugText += "ID: " + world.GetVoxel(playerScript.RealVoxelCoord) + "\nName: " + world._blocktypes[world.GetVoxel(playerScript.RealVoxelCoord)].blockName;
         }
         else
         {

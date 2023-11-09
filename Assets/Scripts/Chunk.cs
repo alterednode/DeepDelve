@@ -148,7 +148,7 @@ public class Chunk
 
     public void EditVoxel(Vector3 pos, byte newID)
     {
-
+        //TODO: this errors when editing a voxel on the border of a loaded BigChunk and an Unloaded BigChunk
         int xCheck = Mathf.FloorToInt(pos.x);
         int yCheck = Mathf.FloorToInt(pos.y);
         int zCheck = Mathf.FloorToInt(pos.z);

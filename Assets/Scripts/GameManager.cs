@@ -30,7 +30,11 @@ public class GameManager : MonoBehaviour
         debugScreenObject.SetActive(false);
         STARTDOINSHIT = false;
         Debug.LogWarning("STARTDOINSHIT START START");
-        activeWorld = CreateWorld(8, 8, 8, 4, 8, 16, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationSimple());
+
+        int startTime = System.DateTime.Now.ToUniversalTime().Millisecond;
+        activeWorld = CreateWorld(512, 512, 512, 2, 4, 16, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationSimple());
+        Debug.LogWarning("World created In :" + (System.DateTime.Now.ToUniversalTime().Millisecond - startTime) + " Milliseconds");
+
         playerScript.world = activeWorld;
         debugScreenObject.SetActive(true);
         debugScreen.SetPlayerAndWorld(playerObject, activeWorld);
@@ -48,8 +52,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if ((!activeWorld.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord)) && activeWorld.IsPosInWorld(playerScript.RealVoxelCoord))
+        //Temporary thing for testing purposes
+        if (activeWorld.IsPosInWorld(playerScript.RealVoxelCoord))
         {
+            if((!activeWorld.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord)))
             activeWorld.LoadBigChunk(playerScript.RealVoxelCoord);
         }
     }
