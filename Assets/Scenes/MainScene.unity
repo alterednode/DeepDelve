@@ -1124,6 +1124,9 @@ MonoBehaviour:
     leftFaceTexture: 3
     rightFaceTexture: 3
   STARTDOINSHIT: 1
+  worldSize: {x: 524, y: 524, z: 524}
+  bigChunkSize: {x: 3, y: 6}
+  chunkSize: 16
 --- !u!4 &1086897698
 Transform:
   m_ObjectHideFlags: 0

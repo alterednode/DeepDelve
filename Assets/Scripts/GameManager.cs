@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +21,18 @@ public class GameManager : MonoBehaviour
 
     public bool STARTDOINSHIT = false;
 
+    /// <summary>
+    /// amount of x,y,z big chunks in the world
+    /// </summary>
+    public Vector3Int worldSize;
+    /// <summary>
+    /// XZ,Y size of the Big chunks (in chunks)
+    /// </summary>
+    public Vector2Int bigChunkSize;
+    /// <summary>
+    /// Size of chunk (in voxels)
+    /// </summary>
+    public int chunkSize;
 
     void Start()
     {
@@ -32,7 +45,7 @@ public class GameManager : MonoBehaviour
         Debug.LogWarning("STARTDOINSHIT START START");
 
         int startTime = System.DateTime.Now.ToUniversalTime().Millisecond;
-        activeWorld = CreateWorld(512, 512, 512, 2, 4, 16, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationDeepDelve());
+        activeWorld = CreateWorld(worldSize.x, worldSize.y, worldSize.z, bigChunkSize.x, bigChunkSize.y, chunkSize, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationDeepDelve());
         Debug.LogWarning("World created In :" + (System.DateTime.Now.ToUniversalTime().Millisecond - startTime) + " Milliseconds");
 
         playerScript.world = activeWorld;
