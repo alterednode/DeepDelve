@@ -95,6 +95,13 @@ public class BigChunk
                     GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     quad.transform.SetParent(QuadParent.transform);
                     quad.transform.position = QuadParent.transform.position;
+
+                    //logic to move and scale th thing correctly based on i
+                    //how the hell do I do that
+
+                    //
+
+
                 }
             }
         }
