@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
         if (activeWorld.IsPosInWorld(playerScript.RealVoxelCoord))
         {
             if((!activeWorld.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord)))
-            activeWorld.LoadBigChunk(playerScript.RealVoxelCoord);
+            activeWorld.LoadBigChunkAtPos(playerScript.RealVoxelCoord);
         }
     }
 

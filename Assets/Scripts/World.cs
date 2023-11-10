@@ -134,15 +134,14 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
 
     public void Init()
     {
-        //kinda suprised this is all this needs
-        //HAHA LOL NVM
-        //and again lol
-
-
+        //  kinda suprised this is all this needs
+        //  HAHA LOL NVM
+        //  and again lol
+        //  acutally now its easier than before
         BigChunkCoord spawnBigChunkcoord = GetBigChunkCoordFromVector3(spawnPosition);
         CreateBigChunk(spawnBigChunkcoord.x, spawnBigChunkcoord.y, spawnBigChunkcoord.z);
-        GetBigChunkFromVector3(spawnPosition).Load();
-        PreloadNearbyChunks(spawnBigChunkcoord);
+
+        LoadBigChunkAtPos(spawnPosition);
     }
 
     void PreloadNearbyChunks(BigChunkCoord coord)
@@ -164,6 +163,7 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
                 }
             }
         }
+
     }
 
     void CreateBigChunk(int x, int y, int z)
@@ -172,14 +172,29 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
         bigChunks[x,y,z] = new BigChunk(coord, this);
     }
 
-    public void LoadBigChunk(Vector3 pos)
+    public void LoadBigChunkAtPos(Vector3 pos)
     {
         BigChunk bigChunk = GetBigChunkFromVector3(pos);
         bigChunk.Load();
         PreloadNearbyChunks(bigChunk.bigCoord);
+        UpdateBigChunkQuads(bigChunk.bigCoord);
     }
 
-
+    private void UpdateBigChunkQuads(BigChunkCoord bigCoord)
+    {
+        bigChunks[bigCoord.x, bigCoord.y, bigCoord.z].ReGenerateQuads();
+        for(int i = 0; i < 6; i++)
+        {
+            BigChunkCoord toUpdate = new BigChunkCoord(
+                bigCoord.x + (int)(VoxelData.faceCheckVectors[i].x),
+                bigCoord.y + (int)(VoxelData.faceCheckVectors[i].y),
+                bigCoord.z + (int)(VoxelData.faceCheckVectors[i].z) );
+            if (IsBigChunkCoordInWorld(toUpdate))
+            {
+                bigChunks[toUpdate.x, toUpdate.y, toUpdate.z].ReGenerateQuads();
+            }
+        }
+    }
 
     public ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
     {
@@ -330,7 +345,18 @@ public class World : MonoBehaviour //TODO: turn this into not a monobehaviour on
             }
         }
             return false;
-        
+    }
+
+    public bool isBigChunkLoaded(BigChunkCoord coord)
+    {
+        if (!(bigChunks[coord.x,coord.y, coord.z] == null))
+        {
+            return bigChunks[coord.x, coord.y, coord.z].isLoaded;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public bool IsVoxelInLoadedChunk(Vector3 pos)
