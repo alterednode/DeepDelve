@@ -36,30 +36,36 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        //set the gamemanager to 0,0,0 to avoid possible issues
         transform.position = Vector3.zero;
-        Debug.LogWarning("START START START");
+        // grab the script from the player
         playerScript = playerObject.GetComponent<OnyxBasicPlayerMovement>();
+        // grab the debugScene script
         debugScreen = debugScreenObject.GetComponent<DebugScreen>();
+        // disable because it gets mad
         debugScreenObject.SetActive(false);
-        STARTDOINSHIT = false;
-        Debug.LogWarning("STARTDOINSHIT START START");
 
+        Debug.LogWarning("Going to create world");
+        //log the time because why not
         int startTime = System.DateTime.Now.ToUniversalTime().Millisecond;
+        // create and set the active world
         activeWorld = CreateWorld(worldSize.x, worldSize.y, worldSize.z, bigChunkSize.x, bigChunkSize.y, chunkSize, new Vector3Int(0, 1, 0), materials, activeBlockset, new GenerationDeepDelve());
         Debug.LogWarning("World created In :" + (System.DateTime.Now.ToUniversalTime().Millisecond - startTime) + " Milliseconds");
-
+        // set the world of the playerscript
         playerScript.world = activeWorld;
+
+        //reEnable this annoying little shit
         debugScreenObject.SetActive(true);
         debugScreen.SetPlayerAndWorld(playerObject, activeWorld);
 
+        // is this needed?
         Vector3 spawnPositionCorrectedForPlayer = activeWorld.spawnPosition + Vector3.one / 2;
 
-
+        // move the player
         playerObject.transform.position = spawnPositionCorrectedForPlayer;
+        // also set the position in the script so shit does not get fucked
         playerScript.realPosition = spawnPositionCorrectedForPlayer;
         Debug.LogWarning("GAME MANAGER STARTUP COMPLETE");
-
-        //temporary values until they get shoved in a config file
 
     }
 
@@ -76,11 +82,17 @@ public class GameManager : MonoBehaviour
 
     World CreateWorld(int worldXSize, int worldYSize, int worldZSize, int bigChunkWidth, int BigChunkHeight, int ChunkSize, Vector3Int spawnSide, Material[] materials, BlockType[] blockTypes, GenerationType generationType)
     {
+        // Brave new world
         GameObject newWorld = new GameObject();
+        // world
         World world = newWorld.AddComponent<World>();
+        // setup world with size and shit
         world.Setup(worldXSize, worldYSize, worldZSize, bigChunkWidth, BigChunkHeight, ChunkSize, spawnSide, materials, blockTypes, generationType);
+        // initalize it
         world.Init();
+        //oog world created
         Debug.LogWarning("finished creating world");
+        // definitely not returning the world obj
         return world;
     }
 
