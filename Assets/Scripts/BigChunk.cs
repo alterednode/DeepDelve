@@ -11,8 +11,6 @@ public class BigChunk
     public BigChunkCoord bigCoord;
     public GameObject bigChunkObject;
 
-    public readonly int _bigChunkWidth;
-    public readonly int _bigChunkHeight;
 
     public Chunk[,,] chunks;
 
@@ -79,6 +77,12 @@ public class BigChunk
             QuadParent.transform.position = this.bigChunkObject.transform.position;
             QuadParent.name = "Quads";
 
+            Vector3 centerOfBigChunk = new Vector3(
+                        world._bigChunkWidth * world._chunkSize / 2,
+                        world._bigChunkHeight * world._chunkSize / 2,
+                        world._bigChunkWidth * world._chunkSize / 2
+                        );
+
             for (int i = 0; i < 6; i++)
             {
                 BigChunkCoord coordToCheck = new BigChunkCoord(
@@ -87,19 +91,42 @@ public class BigChunk
                     bigCoord.z + (int)(VoxelData.faceCheckVectors[i].z)
                     );
 
-                Debug.Log("might be creating quad");
                 // can this be moved into the next thing without
                 if (world.IsBigChunkCoordInWorld(coordToCheck) && !world.isBigChunkLoaded(coordToCheck))
                 {
-                    Debug.Log("creating Quad");
+                    //this works pretty good, a few parts might want to be changed
+
                     GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     quad.transform.SetParent(QuadParent.transform);
-                    quad.transform.position = QuadParent.transform.position;
 
-                    //logic to move and scale th thing correctly based on i
-                    //how the hell do I do that
+                   
+                    
+                    float newX = centerOfBigChunk.x * VoxelData.faceCheckVectors[i].x;
+                    float newY = centerOfBigChunk.y * VoxelData.faceCheckVectors[i].y;
+                    float newZ = centerOfBigChunk.z * VoxelData.faceCheckVectors[i].z;
 
-                    //
+                    quad.transform.position = centerOfBigChunk + new Vector3(newX, newY, newZ) + bigChunkObject.transform.position;
+
+                    quad.transform.LookAt(quad.transform.position + VoxelData.faceCheckVectors[i]);
+                    float width = world._bigChunkWidth * world._chunkSize;
+                    float height = world._bigChunkHeight * world._chunkSize;
+
+                    Vector2 scale;
+                    // if the quad is not on top or on the bottom of the thing
+                    if ((VoxelData.faceCheckVectors[i]).y == 0 ){
+                        scale = new Vector2(width, height);
+                    }
+                    else
+                    {
+                        scale = new Vector2(width, width);
+                    }
+
+
+
+                    quad.transform.localScale = new Vector3(scale.x, scale.y, 1);
+
+
+
 
 
                 }
