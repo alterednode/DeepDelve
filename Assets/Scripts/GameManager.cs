@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour
 
     public BlockType[] activeBlockset;
 
-    public bool STARTDOINSHIT = false;
+    public bool gameStarted = false;
+
+    public GameObject MainMenu;
 
     /// <summary>
     /// amount of x,y,z big chunks in the world
@@ -45,7 +47,18 @@ public class GameManager : MonoBehaviour
         // disable because it gets mad
         debugScreenObject.SetActive(false);
 
-        Debug.LogWarning("Going to create world");
+    }
+
+
+
+
+
+    public void StartGame(){
+if(gameStarted){
+    return;
+}
+
+                Debug.LogWarning("Going to create world");
         //log the time because why not
         int startTime = System.DateTime.Now.ToUniversalTime().Millisecond;
         // create and set the active world
@@ -66,13 +79,18 @@ public class GameManager : MonoBehaviour
         // also set the position in the script so shit does not get fucked
         playerScript.realPosition = spawnPositionCorrectedForPlayer;
         Debug.LogWarning("GAME MANAGER STARTUP COMPLETE");
+        MainMenu.SetActive(false);
+        gameStarted = true;
+    }
 
+    public void QuitGame(){
+        Application.Quit();
     }
 
     private void Update()
     {
         //Temporary thing for testing purposes
-        if (activeWorld.IsPosInWorld(playerScript.RealVoxelCoord))
+        if (gameStarted && activeWorld.IsPosInWorld(playerScript.RealVoxelCoord))
         {
             if((!activeWorld.IsVoxelInLoadedBigChunk(playerScript.RealVoxelCoord)))
             activeWorld.LoadBigChunkAtPos(playerScript.RealVoxelCoord);

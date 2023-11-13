@@ -17,7 +17,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
     public CinemachineFramingTransposer cinemachineFramingTransposer;
     public CinemachinePOV cinemachinePOV;
 
-
+    public GameManager gameManager;
 
     float destinationProx = 1;
     public float destinationProxResetValue = 0.7f;
@@ -38,6 +38,7 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     private void Start()
     {
+
         selectionRegionHandler = selectionRegionIndicator.GetComponent<SelectionRegionHandler>();
         cinemachinePOV = virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
 
@@ -48,6 +49,8 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if(!gameManager.MainMenu.active){
+
         AAAASOMEONEPRESSEDANUMBERKEY();
 
         HandleCamera();
@@ -59,7 +62,9 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         FinalizeSelectionRegion();
 
         DoVoxelPlacement();
+        }
 
+        CheckOtherInput();
     }
 
     public Vector3 RealVoxelCoord
@@ -182,6 +187,12 @@ public class OnyxBasicPlayerMovement : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha7))
         {
             selectedBlockID = 5;
+        }
+    }
+
+    private void CheckOtherInput(){
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            gameManager.MainMenu.SetActive(!gameManager.MainMenu.active);
         }
     }
 
